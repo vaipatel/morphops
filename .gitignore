@@ -1,0 +1,15 @@
+# Ignore our code for the moment, till we start gitflow
+morphops
+
+# python
+__pycache__
+
+# Trying stuff
+MorphopsStuff.ipynb
+trying_stuff
+
+# Editors
+.vscode
+
+# Nb
+.ipynb_checkpoints
