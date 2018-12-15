@@ -1,6 +1,3 @@
-# Ignore our code for the moment, till we start gitflow
-morphops
-
 # python
 __pycache__
 
