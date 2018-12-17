@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import morphops.math_utils as math_utils
 
 def get_position(lmks):    
     """Returns the centroid of the set or sets of landmarks in `lmks`.
@@ -140,9 +141,7 @@ def rotate(source, target, no_reflect=False):
     """
     result = {'src_ald': None, 'R': None, 'D': None}
     # Get the (d x d) covariance between target and source.
-    target_d_sz = len(np.shape(target))
-    targetT = np.swapaxes(target, target_d_sz - 2, target_d_sz - 1)
-    C = np.matmul(targetT, source)
+    C = np.matmul(math_utils.transpose(target), source)
     # Need argmax of tr(Y(XR)t) = tr(RYtX) = tr(RC). Let svd(C) = UDVt.
     U, D, VT = np.linalg.svd(C)
     # Then tr(RC) = tr(R(UDVt)) = tr(D(VtRU)). But M=VtRU is orthogonal and D is non-negative diagonal, so argmax occurs when M = I => R = VUt. We done?
