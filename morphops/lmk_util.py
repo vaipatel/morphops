@@ -1,5 +1,15 @@
 import numpy as np
 
+def num_lmks(X):
+    X_shape = np.shape(X)
+    X_d_sz = len(X_shape)
+    return X_shape[X_d_sz - 2]
+
+def num_coords(X):
+    X_shape = np.shape(X)
+    X_d_sz = len(X_shape)
+    return X_shape[X_d_sz - 1]
+
 def transpose(X):
     """Swaps the last two axes of a N-D tensor.
 
@@ -8,6 +18,6 @@ def transpose(X):
     transposed matrices.
     """
     X_d_sz = len(np.shape(X))
-    if (len(X) < 2):
+    if (X_d_sz < 2):
         return X
     return np.swapaxes(X, X_d_sz - 2, X_d_sz - 1)
