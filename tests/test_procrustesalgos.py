@@ -32,6 +32,9 @@ class TestProcrustesAlgos(object):
                  make_ngon(10), 1/3, np.identity(2), 0, 0, 0,
                  "when X = bY, do_scaling, with 0 oss.")]
 
+    gpa_fail_data = [(np.random.randn(4,3), "when X is a 2d tensor"),
+                     (np.random.randn(2,5,4,3), "when X is a 4d tensor")]
+
     @pytest.mark.parametrize("source, target, no_reflect, src_ald, "
                              "should_match_target, scn",
                              rotate_data)
@@ -55,3 +58,11 @@ class TestProcrustesAlgos(object):
         assert np.allclose(opa_res["c"], c)
         assert np.allclose(opa_res["oss"], oss)
         assert np.allclose(opa_res["oss_stdized"], oss_stdized)
+
+    @pytest.mark.parametrize("X,scn", gpa_fail_data)
+    def test_gpa_fail(self, X, scn):
+        print("gpa should fail -", scn)
+        matchstr = ("The input X must be a 3d tensor corresponding to a "
+                   "list of landmark sets.")
+        with pytest.raises(ValueError,match=matchstr):
+            procrustes.gpa(X)

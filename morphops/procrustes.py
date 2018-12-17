@@ -219,3 +219,11 @@ def opa(source, target, do_scaling=False, no_reflect=False):
     result['c'] = muY - result['b']*np.dot(muX, result['R'])
     
     return result
+
+def gpa(X, do_project=False, do_scaling=False, no_reflect=False):
+    """Perform Generalized Procrustes Alignment on all lmk sets in X.
+    """
+    if (len(np.shape(X)) is not 3):
+        raise ValueError("The input X must be a 3d tensor corresponding to a "
+                         "list of landmark sets.")
+    
