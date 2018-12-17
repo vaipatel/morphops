@@ -6,7 +6,10 @@ from .helpers import make_haus
 class TestProcrustesAlgos(object):
 
     # A weird house, plus its rotated, reflected, aligned versions.
-    haus0, haus0_rot, haus0_refl, haus0_refl_al = make_haus()
+    (haus,
+    haus_c, haus0, haus0_b, haus0_scld, 
+    haus0_Ro, haus0_Rf, haus0_rot, haus0_refl, 
+    haus0_refl_al) = make_haus()
 
     rotate_data = [(haus0_rot, haus0, True, haus0, True,
                     "when X = YT, no_reflect, T rot, with 0 ssq"),
