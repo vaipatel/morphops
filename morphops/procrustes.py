@@ -161,10 +161,10 @@ def rotate(source, target, no_reflect=False):
         # Say N = diag(1,1,..,-1).
         N = np.diag(ones)
         # Then M = VtRU = N => R = VNUt.
-        R = np.dot(np.dot(VT.T, N), U.T)
+        R[ndet_i] = np.matmul(np.matmul(V[ndet_i], N), UT[ndet_i])
         # Also update D
-        D[-1] *= -1
-    result['src_ald'] = np.dot(source, R)
+        D[ndet_i] = np.multiply(D[ndet_i], ones)
+    result['src_ald'] = np.matmul(source, R)
     result['R'] = R
     result['D'] = D
     return result
