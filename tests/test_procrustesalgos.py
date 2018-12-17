@@ -32,24 +32,24 @@ class TestProcrustesAlgos(object):
                  make_ngon(10), 1/3, np.identity(2), 0, 0, 0,
                  "when X = bY, do_scaling, with 0 oss.")]
 
-    @pytest.mark.parametrize("source, target, no_reflect, src_rot, "
+    @pytest.mark.parametrize("source, target, no_reflect, src_ald, "
                              "should_match_target, scn",
                              rotate_data)
-    def test_rotate(self, source, target, no_reflect, src_rot, 
+    def test_rotate(self, source, target, no_reflect, src_ald, 
                     should_match_target, scn):
         print("rotate should solve argmin ||Y - XR||^2 -", scn)
         rot_res = procrustes.rotate(source, target, no_reflect)
-        assert np.allclose(rot_res['src_rot'], src_rot)
-        assert np.allclose(rot_res['src_rot'], target) == should_match_target
+        assert np.allclose(rot_res['src_ald'], src_ald)
+        assert np.allclose(rot_res['src_ald'], target) == should_match_target
 
-    @pytest.mark.parametrize("source, target, do_scaling, no_reflect, src_rot, "
+    @pytest.mark.parametrize("source, target, do_scaling, no_reflect, src_ald, "
                              "b, T, c, oss, oss_stdized, scn",
                              opa_data)
-    def test_opa(self, source, target, do_scaling, no_reflect, src_rot,
+    def test_opa(self, source, target, do_scaling, no_reflect, src_ald,
                  b, T, c, oss, oss_stdized, scn):
         print("opa should min ||Y - bXR + 1*c.T||^2 -", scn)
         opa_res = procrustes.opa(source, target, do_scaling, no_reflect)
-        assert np.allclose(opa_res["src_rot"], src_rot)
+        assert np.allclose(opa_res["src_ald"], src_ald)
         assert np.allclose(opa_res["b"], b)
         assert np.allclose(opa_res["R"], T)
         assert np.allclose(opa_res["c"], c)

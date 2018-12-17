@@ -131,14 +131,14 @@ def rotate(source, target, no_reflect=False):
     Returns
     -------
     result: dict
-        src_rot: np.array
+        src_ald: np.array
             A (nl x d) landmark set consisting of the `source` landmarks rotated to the `target`.
         R: np.array
             A (d x d) array representing the right rotation matrix.
         D: np.array
             A (1 x d) array representing the diagonal matrix of the SVD of np.dot(target.T, source).
     """
-    result = {'src_rot': None, 'R': None, 'D': None}
+    result = {'src_ald': None, 'R': None, 'D': None}
     # Get the (d x d) covariance between target and source.
     C = np.dot(target.T, source)
     # Need argmax of tr(Y(XR)t) = tr(RYtX) = tr(RC). Let svd(C) = UDVt.
@@ -160,7 +160,7 @@ def rotate(source, target, no_reflect=False):
         R = np.dot(np.dot(VT.T, N), U.T)
         # Also update D
         D[-1] *= -1
-    result['src_rot'] = np.dot(source, R)
+    result['src_ald'] = np.dot(source, R)
     result['R'] = R
     result['D'] = D
     return result
@@ -172,7 +172,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         Handle degenerate source, target landmarks.
         Handle fewer landmarks in source.
     """
-    result = { 'oss': None, 'oss_stdized': None, 'b': None, 'R': None, 'c': None, 'src_rot': None }
+    result = { 'oss': None, 'oss_stdized': None, 'b': None, 'R': None, 'c': None, 'src_ald': None }
     # 1. Remove position information
     muX = get_position(source)
     X0 = remove_position(source, muX)
@@ -204,7 +204,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         # For standardized oss we divide by ||Y^2||.
         result['oss_stdized'] = 1 - (traceD*traceD)
         result['oss'] = Y0_ssq*result['oss_stdized']
-        result['src_rot'] = \
+        result['src_ald'] = \
             remove_position(np.dot(Y0_norm*traceD*X0,result['R']), -muY)
     else:
         result['b'] = 1
@@ -213,7 +213,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         # Again for standardized oss we divide by ||Y^2||.
         result['oss_stdized'] = 1 + (X0_ssq/Y0_ssq) - (2*(X0_norm/Y0_norm)*traceD)
         result['oss'] = Y0_ssq*result['oss_stdized']
-        result['src_rot'] = \
+        result['src_ald'] = \
             remove_position(np.dot(X0_norm*X0,result['R']), -muY)
     # c is the gap between centroids of bXR and Y.
     result['c'] = muY - result['b']*np.dot(muX, result['R'])
