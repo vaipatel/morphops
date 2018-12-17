@@ -13,6 +13,9 @@ class TestProcrustesAlgos(object):
 
     rotate_data = [(haus0_rot, haus0, True, haus0, True,
                     "when X = YT, no_reflect, T rot, with 0 ssq"),
+                   ([haus0_rot,haus0_rot], haus0,
+                    True, [haus0, haus0], True,
+                    "when 3-D X = YT, no_reflect, T rot, with 0 ssq"),
                    (haus0_refl, haus0, False, haus0, True,
                     "when X = YT, T refl, with 0 ssq"),
                    (haus0_refl, haus0, True, haus0_refl_al, False,
