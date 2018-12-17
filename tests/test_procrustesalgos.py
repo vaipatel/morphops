@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import morphops.procrustes as procrustes
-from .helpers import make_haus
+from .helpers import make_haus, make_ngon
 
 class TestProcrustesAlgos(object):
 
