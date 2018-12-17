@@ -155,7 +155,7 @@ def rotate(source, target, no_reflect=False):
     ndet_i = detR < 0
     if no_reflect and np.any(ndet_i):
         # Notice argmax tr(DM) = sum d_ii*m_ii is a convex function f(m00, m11, ..) on the set of diagonals of reflection matrices. This set is the convex hull of E = (+-1,+-1,..), where the num of -1s is odd per A.Horn (1954). So f is maximized at a vertex in E, but where? 
-        ones = np.ones(VT.shape[0])
+        ones = np.ones(lmk_util.num_coords(source))
         # Well every dii is non-negative, so assuming that dii are in descending order: argmax f has to be (1,1,..,1,-1).
         ones[-1] = -1
         # Say N = diag(1,1,..,-1).
