@@ -174,11 +174,10 @@ def opa(source, target, do_scaling=False, no_reflect=False):
     """
     result = { 'oss': None, 'oss_stdized': None, 'b': None, 'R': None, 'c': None, 'src_rot': None }
     # 1. Remove position information
-    X0 = remove_position(source)
-    # We already know c is the target's centroid.
-    c = get_position(target)
-    result['c'] = c
-    Y0 = remove_position(target, c)
+    muX = get_position(source)
+    X0 = remove_position(source, muX)
+    muY = get_position(target)
+    Y0 = remove_position(target, muY)
     # 2. Remove scale information
     X0_norm = get_scale(X0)
     Y0_norm = get_scale(Y0)
@@ -205,7 +204,8 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         # For standardized oss we divide by ||Y^2||.
         result['oss_stdized'] = 1 - (traceD*traceD)
         result['oss'] = Y0_ssq*result['oss_stdized']
-        result['src_rot'] = remove_position(np.dot(Y0_norm*traceD*X0,result['R']), -result['c'])
+        result['src_rot'] = \
+            remove_position(np.dot(Y0_norm*traceD*X0,result['R']), -muY)
     else:
         result['b'] = 1
         # The oss expression with a given b is 
@@ -213,6 +213,9 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         # Again for standardized oss we divide by ||Y^2||.
         result['oss_stdized'] = 1 + (X0_ssq/Y0_ssq) - (2*(X0_norm/Y0_norm)*traceD)
         result['oss'] = Y0_ssq*result['oss_stdized']
-        result['src_rot'] = remove_position(np.dot(X0_norm*X0,result['R']), -result['c'])
+        result['src_rot'] = \
+            remove_position(np.dot(X0_norm*X0,result['R']), -muY)
+    # c is the gap between centroids of bXR and Y.
+    result['c'] = muY - result['b']*np.dot(muX, result['R'])
     
     return result
