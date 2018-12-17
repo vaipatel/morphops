@@ -144,8 +144,10 @@ def rotate(source, target, no_reflect=False):
     C = np.matmul(lmk_util.transpose(target), source)
     # Need argmax of tr(Y(XR)t) = tr(RYtX) = tr(RC). Let svd(C) = UDVt.
     U, D, VT = np.linalg.svd(C)
+    V = lmk_util.transpose(VT)
+    UT = lmk_util.transpose(U)
     # Then tr(RC) = tr(R(UDVt)) = tr(D(VtRU)). But M=VtRU is orthogonal and D is non-negative diagonal, so argmax occurs when M = I => R = VUt. We done?
-    R = np.dot(VT.T, U.T)
+    R = np.matmul(V, UT)
     # Well, the above R is not guaranteed to be in SO(d), only in O(d). det(R) is 1 when R is a rotation, else -1 when R is a reflection.
     detR = np.linalg.det(R)
     # Say det(R) = det(VUt) = -1. If we want to force det(R) = 1, then det(M) = det(VtRU) = det(R)*det(VUt) = -1.
