@@ -152,7 +152,8 @@ def rotate(source, target, no_reflect=False):
     detR = np.linalg.det(R)
     # Say det(R) = det(VUt) = -1. If we want to force det(R) = 1, then det(M) = det(VtRU) = det(R)*det(VUt) = -1.
     # So if R is constrained to be a rotation, M must be a reflection.
-    if no_reflect and detR < 0:
+    ndet_i = detR < 0
+    if no_reflect and np.any(ndet_i):
         # Notice argmax tr(DM) = sum d_ii*m_ii is a convex function f(m00, m11, ..) on the set of diagonals of reflection matrices. This set is the convex hull of E = (+-1,+-1,..), where the num of -1s is odd per A.Horn (1954). So f is maximized at a vertex in E, but where? 
         ones = np.ones(VT.shape[0])
         # Well every dii is non-negative, so assuming that dii are in descending order: argmax f has to be (1,1,..,1,-1).
