@@ -224,13 +224,76 @@ def opa(source, target, do_scaling=False, no_reflect=False):
     
     return result
 
-def gpa(X, do_project=False, do_scaling=False, no_reflect=False):
+def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
+        no_reflect=False, unitize_mean=False):
     """Perform Generalized Procrustes Alignment on all lmk sets in X.
     """
-    if (len(np.shape(X)) is not 3):
-        raise ValueError("The input X must be a 3d tensor corresponding to a "
-                         "list of landmark sets.")
+    res = {'X0_ald': None, 'X0_ald_mu': None, 'X0_b': None, 'ssq': None}
+    n_lmk_sets = lmk_util.num_lmk_sets(X)
+    n_lmks = lmk_util.num_lmks(X)
+    n_coords = lmk_util.num_coords(X)
+    # 1. Remove position
+    muX = get_position(X)
+    X0 = remove_position(X, muX)
     
+    # 2. Remove scale (if not do_scaling, we're just doing partial procrustes)
+    X0_norm = get_scale(X0)
+    X0 = remove_scale(X0, X0_norm)
+    X0_b = np.reciprocal(X0_norm)
+    
+    # 3. Rotate all lmk sets to the mean of all other lmk sets. Scale.
+    X0_ald = X0
+    ssq, ssq_old = None, None
+    curr_iter = 0
+    all_i = np.arange(n_lmk_sets)
+
+    def is_ssq_ok():
+        return ((ssq is not None) and (ssq_old is not None) and 
+               ((ssq_old - ssq) <= tol))
+    
+    while (not is_ssq_ok()) and (curr_iter < max_iters):
+        # 3.1. Rotate
+        while(not is_ssq_ok()):
+            ssq_old = ssq
+            for i in range(n_lmk_sets):
+                # Get the mean of all but the ith lmk set
+                all_but_i = X0_ald[all_i != i]
+                mean_for_i = (1.0/(n_lmk_sets-1))*np.sum(all_but_i, axis=0)
+                # Rotate all lmk sets to this mean
+                X0_ald = rotate(X0_ald, mean_for_i, no_reflect)['src_ald']
+            ssq = get_ssqd(X0_ald)
+
+        # 3.2. Scale
+        if do_scaling:
+            # We first get the biggest eigvec the nxn corr matrix.
+            X0_ald_vecd = np.reshape(X0_ald, (n_lmk_sets, n_coords*n_lmks))
+            X0_corrcoef = np.corrcoef(X0_ald_vecd)
+            eig_vals, eig_vecs = np.linalg.eig(X0_corrcoef)
+            sort_perm = eig_vals.argsort()
+            phi = eig_vecs[:, sort_perm][:, -1]
+            # The scale beta_i = sqrt(sum of sqd norms/ith sqd norm)*phi[i]
+            X0_ald_norm = get_scale(X0_ald)
+            X0_ald_ssq_norm = np.sqrt(np.sum(np.square(X0_ald)))
+            frac = np.reciprocal(X0_ald_norm, dtype=np.float64)*X0_ald_ssq_norm
+            beta = np.multiply(frac, phi)
+            # Rescale X0_ald[i] by b_i
+            X0_ald = np.multiply(X0_ald, np.reshape(beta, (n_lmk_sets,1,1)))
+            # Update X0_b
+            X0_b = np.multiply(X0_b, beta)
+            print(X0_b)
+
+        ssq = get_ssqd(X0_ald)
+        curr_iter += 1
+    
+    # The mean is just the mean of the procrustes aligned lmk sets.
+    X0_ald_mu = (1.0/n_lmk_sets)*np.sum(X0_ald, axis=0)
+
+    res['X0_ald'] = X0_ald
+    res['X0_ald_mu'] = X0_ald_mu
+    res['X0_b'] = X0_b
+    res['ssq'] = ssq
+    return res
+
 def get_ssqd(X):
     """Alias for `lmk_util.ssqd(X)`.
     """
