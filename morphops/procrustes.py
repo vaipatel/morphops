@@ -231,3 +231,8 @@ def gpa(X, do_project=False, do_scaling=False, no_reflect=False):
         raise ValueError("The input X must be a 3d tensor corresponding to a "
                          "list of landmark sets.")
     
+def get_ssqd(X):
+    """Alias for `lmk_util.ssqd(X)`.
+    """
+    return lmk_util.ssqd(X)
+
