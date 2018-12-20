@@ -291,6 +291,8 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
     
     # The mean is just the mean of the procrustes aligned lmk sets.
     X0_ald_mu = (1.0/n_lmk_sets)*np.sum(X0_ald, axis=0)
+    if unitize_mean:
+        X0_ald_mu = remove_scale(X0_ald_mu)
 
     res['X0_ald'] = X0_ald
     res['X0_ald_mu'] = X0_ald_mu
