@@ -2,8 +2,9 @@ import numpy as np
 
 def num_lmk_sets(X):
     if (len(np.shape(X)) is not 3):
-        raise ValueError("The input X must be a 3d tensor corresponding to a "
-                         "list of landmark sets.")
+        raise ValueError("The input X must be a 3-D tensor of shape "
+        "(n x p x k) corresponding to n landmark sets, each consisting "
+        "of p landmarks in k dimensions.")
     return np.shape(X)[0]
 
 def num_lmks(X):
