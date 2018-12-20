@@ -10,11 +10,15 @@ def num_lmk_sets(X):
 def num_lmks(X):
     X_shape = np.shape(X)
     X_d_sz = len(X_shape)
+    if X_d_sz < 2:
+        raise ValueError("The input X must be a 2-D or 3-D tensor.")
     return X_shape[X_d_sz - 2]
 
 def num_coords(X):
     X_shape = np.shape(X)
     X_d_sz = len(X_shape)
+    if X_d_sz < 1:
+        raise ValueError("The input X must be a 1-D, 2-D or 3-D tensor.")
     return X_shape[X_d_sz - 1]
 
 def transpose(X):
