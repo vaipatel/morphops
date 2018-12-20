@@ -1,3 +1,4 @@
+import re
 import pytest
 import numpy as np
 import morphops.procrustes as procrustes
@@ -62,10 +63,10 @@ class TestProcrustesAlgos(object):
         assert np.allclose(opa_res["oss"], oss)
         assert np.allclose(opa_res["oss_stdized"], oss_stdized)
 
-    @pytest.mark.parametrize("X,scn", gpa_fail_data)
+    @pytest.mark.parametrize("X, scn", gpa_fail_data)
     def test_gpa_fail(self, X, scn):
         print("gpa should fail -", scn)
-        matchstr = ("The input X must be a 3d tensor corresponding to a "
-                   "list of landmark sets.")
+        matchstr = ("The input X must be a 3-D tensor of shape (n x p x k)")
+        matchstr = re.escape(matchstr)
         with pytest.raises(ValueError,match=matchstr):
             procrustes.gpa(X)
