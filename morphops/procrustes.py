@@ -232,6 +232,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
     n_lmk_sets = lmk_util.num_lmk_sets(X)
     n_lmks = lmk_util.num_lmks(X)
     n_coords = lmk_util.num_coords(X)
+
     # 1. Remove position
     muX = get_position(X)
     X0 = remove_position(X, muX)
@@ -271,6 +272,8 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
             eig_vals, eig_vecs = np.linalg.eigh(X0_corrcoef)
             sort_perm = eig_vals.argsort()
             phi = eig_vecs[:, sort_perm][:, -1]
+            if np.all(phi < 0):
+                phi = np.abs(phi) # TODO: Is this okay to do?
             # The scale beta_i = sqrt(sum of sqd norms/ith sqd norm)*phi[i]
             X0_ald_norm = get_scale(X0_ald)
             X0_ald_ssq_norm = np.sqrt(np.sum(np.square(X0_ald)))
