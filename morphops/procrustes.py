@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import morphops.lmk_util as lmk_util
+import warnings
 
 def get_position(lmks):    
     """Returns the centroid of the set or sets of landmarks in `lmks`.
@@ -293,6 +294,23 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
     X0_ald_mu = (1.0/n_lmk_sets)*np.sum(X0_ald, axis=0)
     if unitize_mean:
         X0_ald_mu = remove_scale(X0_ald_mu)
+
+    if do_project:
+        if do_scaling:
+            w_msg = ("`do_project` assumes that the aligned lmk sets are scaled to have unit centroid size, which is not guaranteed if `do_scaling`. Proceeding with projection using the non-unit size lmk sets. See \'Rohlf, F. J. (1999). Shape statistics: Procrustes superimpositions and tangent spaces.\'")
+            warnings.warn(w_msg)
+        XC = X0_ald_mu.reshape((1, n_coords*n_lmks))
+        X = X0_ald.reshape((n_lmk_sets, n_coords*n_lmks))
+        # Get the projection matrix to project a shape onto X_c.
+        XC_proj = (1.0/(XC @ XC.T)) * (XC.T @ XC)
+        # Project all shapes onto the subspace orthogonal to X_c.
+        X_tan = X @ (np.identity(n_coords*n_lmks) - XC_proj)
+        # The above are like coordinates in the tangent space.
+        # To get the "icons", we add back the mean.
+        X0_ald = (X_tan + XC).reshape((n_lmk_sets, n_lmks, n_coords))
+        # Recalculate the ssq
+        ssq = get_ssqd(X0_ald)
+        print("ssq diff", ssq_old - ssq)
 
     res['X0_ald'] = X0_ald
     res['X0_ald_mu'] = X0_ald_mu
