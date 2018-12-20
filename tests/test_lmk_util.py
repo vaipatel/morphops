@@ -1,10 +1,11 @@
+import re
 import pytest
 import numpy as np
 import morphops.lmk_util as lmk_util
 from .helpers import make_haus, make_ngon
 
-ssqd_fail_data = [(make_ngon(4), "The input X must be a 3d tensor "
-                  "corresponding to a list of landmark sets.",
+ssqd_fail_data = [(make_ngon(4), "The input X must be a 3-D tensor "
+                  "of shape (n x p x k)",
                   "when X is a 2D matrix"),
                   ([make_ngon(4)], "The input X must contain atleast "
                   "2 landmark sets.",
@@ -21,7 +22,7 @@ ssqd_data = [(np.zeros((3,4,2)), 0, "when X is all 0s, as 0."),
 @pytest.mark.parametrize("X, err_msg, scn", ssqd_fail_data)
 def test_ssqd_fail(X, err_msg, scn):
     print("ssqd should fail -", scn)
-    with pytest.raises(ValueError,match=err_msg):
+    with pytest.raises(ValueError,match=re.escape(err_msg)):
         lmk_util.ssqd(X)
 
 @pytest.mark.parametrize("X, ans, scn", ssqd_data)
