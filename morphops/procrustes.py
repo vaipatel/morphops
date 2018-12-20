@@ -268,7 +268,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
             # We first get the biggest eigvec the nxn corr matrix.
             X0_ald_vecd = np.reshape(X0_ald, (n_lmk_sets, n_coords*n_lmks))
             X0_corrcoef = np.corrcoef(X0_ald_vecd)
-            eig_vals, eig_vecs = np.linalg.eig(X0_corrcoef)
+            eig_vals, eig_vecs = np.linalg.eigh(X0_corrcoef)
             sort_perm = eig_vals.argsort()
             phi = eig_vecs[:, sort_perm][:, -1]
             # The scale beta_i = sqrt(sum of sqd norms/ith sqd norm)*phi[i]
