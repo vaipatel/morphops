@@ -250,6 +250,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
 
     def is_ssq_ok():
         return ((ssq is not None) and (ssq_old is not None) and 
+               ((ssq_old - ssq) >= 0) and
                ((ssq_old - ssq) <= tol))
     
     while (not is_ssq_ok()) and (curr_iter < max_iters):
