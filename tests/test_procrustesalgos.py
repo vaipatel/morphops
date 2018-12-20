@@ -8,7 +8,7 @@ class TestProcrustesAlgos(object):
 
     # A weird house, plus its rotated, reflected, aligned versions.
     (haus,
-    haus_c, haus0, haus0_b, haus0_scld, 
+    haus_c, haus0_b, haus0, two, haus0_scld, 
     haus0_Ro, haus0_Rf, haus0_rot, haus0_refl, 
     haus0_refl_al) = make_haus()
 

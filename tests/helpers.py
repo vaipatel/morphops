@@ -23,14 +23,15 @@ def make_haus():
                          make_ngon(3, -piOvr4/2) + [0, 1]))
     haus_c = np.array([0,3/7])
     haus0 = haus - haus_c
-    haus0_b = 2
-    haus0_scld = haus0_b*haus0
+    haus0_b = np.sqrt(np.sum(np.square(haus0)))
+    two = 2
+    haus0_scld = two*haus0
     haus0_Ro = get_2d_rot(piOvr4)
     haus0_Rf = a_2d_refl()
     haus0_rot = np.dot(haus0, haus0_Ro)
     haus0_refl = np.dot(haus0, haus0_Rf)
     haus0_refl_al = np.dot(haus0, [[-1,0],[0,1]]) # haus0 refl across y axis
     return (haus,
-            haus_c, haus0, haus0_b, haus0_scld, 
+            haus_c, haus0_b, haus0, two, haus0_scld, 
             haus0_Ro, haus0_Rf, haus0_rot, haus0_refl, 
             haus0_refl_al)
