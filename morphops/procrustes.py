@@ -285,11 +285,12 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
             X0_ald = np.multiply(X0_ald, np.reshape(beta, (n_lmk_sets,1,1)))
             # Update X0_b
             X0_b = np.multiply(X0_b, beta)
-            print(X0_b)
 
         ssq = get_ssqd(X0_ald)
         curr_iter += 1
     
+    print("ssq diff", ssq_old - ssq)
+
     # The mean is just the mean of the procrustes aligned lmk sets.
     X0_ald_mu = (1.0/n_lmk_sets)*np.sum(X0_ald, axis=0)
     if unitize_mean:
