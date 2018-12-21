@@ -31,7 +31,8 @@ def read_dta(filename):
        appearance of their names in the preceding section.
        
 
-    R's Morpho pkg seems to have a much cooler implementation.
+    Below impl is very very non-pythonic. R's Morpho pkg seems to have a much 
+    cooler implementation.
     """
     did_header = False
     names = []
