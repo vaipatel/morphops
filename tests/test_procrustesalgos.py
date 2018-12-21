@@ -2,7 +2,7 @@ import re
 import pytest
 import numpy as np
 import morphops.procrustes as procrustes
-from .helpers import make_haus, make_ngon
+from .helpers import make_haus, make_ngon, get_2d_refl
 
 class TestProcrustesAlgos(object):
 
@@ -39,6 +39,22 @@ class TestProcrustesAlgos(object):
     gpa_fail_data = [(np.random.randn(4,3), "when X is a 2d tensor"),
                      (np.random.randn(2,5,4,3), "when X is a 4d tensor")]
 
+    # X, do_project, do_scaling, no_reflect, unitize_mean, mu, b
+    gpa_data = [([haus0, haus0, haus0_scld], False, False, True, False,
+                 haus0/haus0_b, [1.0/haus0_b, 1.0/haus0_b, 1.0/(two*haus0_b)],
+                 "when X is scaled versions of the same haus0, no_reflect. "
+                 "Result is: mu is haus0, b is 1/(scale of haus0)."),
+                ([haus0, haus0, haus0_scld], False, True, True, True,
+                 haus0/haus0_b, [1.0/haus0_b, 1.0/haus0_b, 1.0/(two*haus0_b)],
+                 "when X is scaled versions of the same haus0, all opts true "
+                 "except do_project. "
+                 "Result is: mu is haus0, b is 1/(scale of haus0)."),
+                ([haus0, haus0 @ get_2d_refl(0)],False, True, True, False,
+                 (haus0 @ [[0,0],[0,1]])/haus0_b,
+                 [1.0/haus0_b, 1.0/haus0_b],
+                 "when X is haus0 and its y-refln, do_scaling, no_reflect. "
+                 "Result is: mu is [(0,y_i)]*b, b is 1/(scale of haus0).")]
+
     @pytest.mark.parametrize("source, target, no_reflect, src_ald, "
                              "should_match_target, scn",
                              rotate_data)
@@ -70,3 +86,22 @@ class TestProcrustesAlgos(object):
         matchstr = re.escape(matchstr)
         with pytest.raises(ValueError,match=matchstr):
             procrustes.gpa(X)
+
+    def test_gpa_warn(self):
+        print("gpa should warn -", "when `do_scaling` and `do_project` "
+              "are both `True`.")
+        w_msg = ("`do_project` assumes that the aligned lmk sets are scaled to have unit centroid size, which is not guaranteed if `do_scaling`. Proceeding with projection using the non-unit size lmk sets. See \'Rohlf, F. J. (1999). Shape statistics: Procrustes superimpositions and tangent spaces.\'")
+        matchstr = re.escape(w_msg)
+        with pytest.warns(UserWarning,match=matchstr):
+            X = [self.haus0, self.haus0_rot]
+            procrustes.gpa(X,do_project=True, do_scaling=True)
+
+    @pytest.mark.parametrize("X, do_project, do_scaling, no_reflect,"
+                             "unitize_mean, mu, b, scn", gpa_data)
+    def test_gpa(self, X, do_project, do_scaling, no_reflect, unitize_mean,
+                 mu, b, scn):
+        print("gpa should perform gpa -", scn)
+        res = procrustes.gpa(X, do_project=do_project, do_scaling=do_scaling,
+                             no_reflect=no_reflect, unitize_mean=unitize_mean)
+        assert np.allclose(res['X0_ald_mu'], mu)
+        assert np.allclose(res['X0_b'], b)
