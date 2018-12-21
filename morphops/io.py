@@ -6,6 +6,27 @@ class MopsFileReadError(Exception):
 def read_dta(filename):
     """Reads *.dta files in the written by IDAV Landmark Editor.
 
+    dta files typically have the following structure.
+    1. Few comment lines. Comment lines start with a quotation mark (' or ").
+    2. A header with structure "1 nL pk 1 9999 Dim=k". Here 
+       1. n is the number of specimens or number of landmark sets
+       2. L in "nL" indicates that the file has specimen labels - assumed true
+       3. p is the number of landmarks per landmark set
+       4. k is the number of coordinates of each landmark (usually 2 or 3)
+
+       The "1 9999" are ignored (but expected to exist) when reading. This is 
+       because those two numbers are a misapplication of the NTS format, which 
+       the DTA format is based on. Per the NTS format, the interpretation of 
+       the "1 9999" is that the file has missing data indicated by 9999.
+       The misapplication in DTA files is that these files always 
+       contains the "1 9999" numbers, regardless of whether the file actually 
+       has missing data.
+    3. n lines, each corresponding to the label of 1 specimen.
+    4. n blocks of p lines. Each line contains k numbers. These correspond to 
+       p k-D landmarks in each of the n specimens specified in the order of 
+       appearance of their names in the preceding section.
+       
+
     R's Morpho pkg seems to have a much cooler implementation.
     """
     did_header = False
