@@ -1,6 +1,10 @@
 import numpy as np
+import morphops.lmk_util as lmk_util
 
 class MopsFileReadError(Exception):
+    pass
+
+class MopsFileWriteError(Exception):
     pass
 
 def read_dta(filename):
@@ -74,6 +78,64 @@ def read_dta(filename):
     # Reshape into a n x p x k tensor
     lmk_sets = np.array(pts).reshape((n, p, k))
     return lmk_sets, names
+
+def write_dta(filename, lmk_sets, names=[]):
+    """Writes *.dta files in the written by IDAV Landmark Editor.
+
+    dta files typically have the following structure.
+    1. Few comment lines. Comment lines start with a quotation mark (' or ").
+    2. A header with structure "1 nL pk 1 9999 Dim=k". Here 
+       1. n is the number of specimens or number of landmark sets
+       2. L in "nL" indicates that the file has specimen labels - assumed true
+       3. p is the number of landmarks per landmark set
+       4. k is the number of coordinates of each landmark (usually 2 or 3)
+
+       The "1 9999" are ignored (but expected to exist) when reading. This is 
+       because those two numbers are a misapplication of the NTS format, which 
+       the DTA format is based on. Per the NTS format, the interpretation of 
+       the "1 9999" is that the file has missing data indicated by 9999.
+       The misapplication in DTA files is that these files always 
+       contains the "1 9999" numbers, regardless of whether the file actually 
+       has missing data.
+    3. n lines, each corresponding to the label of 1 specimen.
+    4. n blocks of p lines. Each line contains k numbers. These correspond to 
+       p k-D landmarks in each of the n specimens specified in the order of 
+       appearance of their names in the preceding section.
+    
+    Below impl is very very non-pythonic.
+    """
+    n = lmk_util.num_lmk_sets(lmk_sets)
+    p = lmk_util.num_lmks(lmk_sets)
+    k = lmk_util.num_coords(lmk_sets)
+
+    with open(filename, 'w+') as f:
+        # Write some comments
+        f.write("\'DTA file written by morphops\n")
+        f.write("\n")
+        # Write header
+        header_els = [1, n, p*k, 1, 9999, 
+                      ''.join(np.array(['Dim=',k]).astype(str))]
+        header = ' '.join(np.array(header_els).astype(str))
+        f.write(header + "\n")
+        f.write("\n")
+        # Write the names. Missing names are populated as 'InsertName{ID}', 
+        # where ID goes from [len(names) + 1, n + 1).
+        rem_names_ids = np.arange(len(names)+1,n+1).astype(str)
+        rem_names = np.core.char.add('InsertName', rem_names_ids)
+        names = np.append(names, rem_names)
+        for name in names:
+            f.write(name + "\n")
+        
+        # Write the coordinates
+        for i in range(n):
+            f.write("\n")
+            for j in range(p):
+                lmk = np.array(lmk_sets[i, j, 0:k])
+                lmkstr = np.array2string(lmk, precision=20)
+                lmkstr = lmkstr.replace('[','').replace(']','').strip()
+                f.write(lmkstr + "\n")
+        
+
 
             
             
