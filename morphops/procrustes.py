@@ -1,3 +1,19 @@
+"""Provides common procrustes alignment related operations and algorithms.
+
+For geometric morphometrics based studies, after landmark data are 
+collected for each specimen, a typical next step is to remove the position, 
+size and orientation information from the landmark set of each specimen so
+that what remains is the shape information. This can be achieved by, for 
+example, running generalized procrustes aligment (see :func:`gpa()`) on the set 
+of landmark sets.
+
+After procrustes alignment, the shapes lie in a high-dimensional non-euclidean
+manifold but are usually quite close to each other and can be projected to a
+euclidean tangent space at their shape mean, whereupon they can be subjected to
+multivariate analysis techniques like Principal Components Analysis, Partial 
+Least Squares, etc.
+"""
+
 import numpy as np
 import math
 import morphops.lmk_util as lmk_util
@@ -6,22 +22,31 @@ import warnings
 def get_position(lmks):    
     """Returns the centroid of the set or sets of landmarks in `lmks`.
 
+    The centroid of a :math:`p` landmarks is simply the arithmetic mean of all 
+    the landmark positions. That is 
+
+    .. math:: \mathbf{x_c} = \sum_{i=1}^p \dfrac{\mathbf{x_i}}{p}
+
     Parameters
     ----------
     lmks : np.ndarray or list
+
         One of
-        1. A (p,k)-shaped array of landmarks corresponding to a single specimen.
-        2. A (n,p,k)-shaped array of landmark sets corresponding to n specimens.
+        
+        * A (p,k)-shaped array of p landmarks corresponding for one specimen.
+
+        * A (n,p,k)-shaped array of n landmark sets for n specimens.
 
     Returns
     -------
     centroid : np.array
-        One of
-        1. If `lmks` is a (p,k) array, then `centroid` is a (k,)-shaped array, 
-        whose ith entry is the mean of the ith landmark coordinate in `lmks`.
-        2. If `lmks` is a (n,p,k) array, then `centroid` is a (n,k)-shaped 
-        array whose ith element is the (k,)-shaped centroid of the ith 
-        specimen's landmarks in `lmks`.
+
+        * If `lmks` is a (p,k) array, then `centroid` is a (k,)-shaped array,
+          whose i-th element is the mean of the i-th coordinate in `lmks`.
+
+        * If `lmks` is a (n,p,k) array, then `centroid` is a (n,k)-shaped
+          array whose i-th element is the (k,)-shaped centroid of the i-th
+          specimen's landmarks in `lmks`.
     """
     lmks_shape_dim = len(np.shape(lmks))
     if (lmks_shape_dim != 2) and (lmks_shape_dim !=3):
@@ -30,27 +55,41 @@ def get_position(lmks):
     return np.asarray(np.nanmean(lmks, axis=axis))
 
 def get_scale(lmks):       
-    """Returns the euclidean norm of the matrix or matrices in `lmks`.
+    """Returns the euclidean norm of the real matrix or matrices in `lmks`.
 
-    Note `lmks` is not assumed to have been centered. To center the
-    landmarks you may call `remove_position(lmks)`.
+    The euclidean norm of the real (p x k) matrix :math:`X` is calculated as
 
-    ### Todo
+    .. math:: \|X\| = \sqrt{Tr(X^T X)}
+
+    Note
+    ----
+    `lmks` is not assumed to have been centered. To center the
+    landmarks you can call `remove_position(lmks)`.
+
+    Todo
+    ----
     1. Check the literature to see if this is indeed meant to be the euclidean norm as opposed to the frobenius norm (I imagine it only differs if data is complex).
 
     Parameters
     ----------
     lmks : np.ndarray or list
+
         One of
-        1. A (nl x d) set of landmarks corresponding to a single specimen.
-        2. A (k x nl x d) set of k landmark sets corresponding to k specimens.
+
+        * A (p,k)-shaped array of landmarks for a single specimen.
+        
+        * A (n,p,k)-shaped array of n landmark sets for n specimens.
 
     Returns
     -------
-    scale : np.float64 or np.ndarray
-        One of
-        1. A single float for the euclidean norm of the `lmks` matrix.
-        2. A k-dimensional array whose kth element is the frobenius norm of the kth specimen's landmarks matrix in the `lmks` matrices.
+    scale : float or np.ndarray
+
+        * If `lmks` is (p,k)-shaped, `scale` is a float representing its
+          euclidean norm.
+        
+        * If `lmks` is (n,p,k)-shaped, `scale` is an (n,)-shaped array such 
+          that the i-th element is the euclidean norm of the i-th specimen's
+          landmarks.
     """
     lmks_shape_dim = len(np.shape(lmks))
     if (lmks_shape_dim != 2) and (lmks_shape_dim !=3):
@@ -60,8 +99,6 @@ def get_scale(lmks):
 
 def remove_position(lmks, position=None):
     """Translates the landmarks in `lmks` such that `get_position()` coincides with (centroid - `position`) if `position` is valid, else the origin.
-
-    ...todo...:: Do a better check of position.
 
     Parameters
     ----------
@@ -85,7 +122,7 @@ def remove_position(lmks, position=None):
         return lmks - pos[:, np.newaxis, :]
     
 def remove_scale(lmks, scale=None):
-    """Scales the landmarks in `lmks` such that `get_scale()` equals the euclidean norm divided by `scale` if `scale` is valid, else 1.
+    """Scales the landmarks in `lmks` such that :func:`get_scale()` equals the euclidean norm divided by `scale` if `scale` is valid, else 1.
 
     Note `lmks` is not assumed to have been centered. To center the
     landmarks you may call `remove_position(lmks)`.
