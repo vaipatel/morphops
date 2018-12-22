@@ -4,7 +4,7 @@ For geometric morphometrics based studies, after landmark data are
 collected for each specimen, a typical next step is to remove the position, 
 size and orientation information from the landmark set of each specimen so
 that what remains is the shape information. This can be achieved by, for 
-example, running generalized procrustes aligment (see :func:`gpa()`) on the set 
+example, running Generalized Procrustes Aligment (see :func:`gpa()`) on the set 
 of landmark sets.
 
 After procrustes alignment, the shapes lie in a high-dimensional non-euclidean
@@ -31,11 +31,13 @@ def get_position(lmks):
     ----------
     lmks : np.ndarray or list
 
-        One of
+        One of the following
         
-        * A (p,k)-shaped array of p landmarks corresponding for one specimen.
+        * **Single specimen** A (p,k) array of p landmarks in k dimensions for
+          one specimen.
 
-        * A (n,p,k)-shaped array of n landmark sets for n specimens.
+        * **n specimens** A (n,p,k) array of n landmark sets for n specimens, 
+          each having p landmarks in k dimensions.
 
     Returns
     -------
@@ -74,11 +76,13 @@ def get_scale(lmks):
     ----------
     lmks : np.ndarray or list
 
-        One of
-
-        * A (p,k)-shaped array of landmarks for a single specimen.
+        One of the following
         
-        * A (n,p,k)-shaped array of n landmark sets for n specimens.
+        * **Single specimen** A (p,k) array of p landmarks in k dimensions for
+          one specimen.
+
+        * **n specimens** A (n,p,k) array of n landmark sets for n specimens, 
+          each having p landmarks in k dimensions.
 
     Returns
     -------
@@ -98,21 +102,35 @@ def get_scale(lmks):
     return np.linalg.norm(lmks, axis=axis)
 
 def remove_position(lmks, position=None):
-    """Translates the landmarks in `lmks` such that `get_position()` coincides with (centroid - `position`) if `position` is valid, else the origin.
+    """If `position` is None, :func:`remove_position` translates `lmks` such 
+    that :func:`get_position()` of `translated_lmks` is the origin. Else it is 
+    the (:func:`get_position()` of `lmks`) - `position`.
 
     Parameters
     ----------
     lmks : np.ndarray or list
-        One of
-        1. A (nl x d) set of landmarks corresponding to a single specimen.
-        2. A (k x nl x d) set of k landmark sets corresponding to k specimens.
+
+        One of the following
+        
+        * **Single specimen** A (p,k) array of p landmarks in k dimensions for
+          one specimen.
+
+        * **n specimens** A (n,p,k) array of n landmark sets for n specimens, 
+          each having p landmarks in k dimensions.
 
     Returns
     -------
-    np.array
-        One of
-        1. A (nl x d) landmark set centered on (centroid - `position`) if `position` is valid, else the origin.
-        2. A (k x nl x d) set of k landmark sets, each centered on their (respective centroid - `position`) if `position` is valid else the origin.
+    translated_lmks: np.array
+
+        * **Single specimen** If `lmks` is (p,k)-shaped, `translated_lmks` is
+          (p,k)-shaped such that the centroid of `translated_lmks` + `position`
+          = centroid of `lmks`. When `position` is None, it is taken to be the
+          centroid of `lmks`, which means `translated_lmks` is at the origin.
+        
+        * If `lmks` is (n,p,k)-shaped, `translated_lmks` is (n,p,k)-shaped such
+          that the i-th element of `translated_lmks` is related to the i-th
+          specimen of `lmks` by a translation calculated as per the single
+          specimen case.
     """
     lmks_shape_dim = len(np.shape(lmks))
     pos = np.array(position) if position is not None else get_position(lmks)
@@ -130,9 +148,14 @@ def remove_scale(lmks, scale=None):
     Parameters
     ----------
     lmks : np.ndarray or list
-        One of
-        1. A (nl x d) set of landmarks corresponding to a single specimen.
-        2. A (k x nl x d) set of k landmark sets corresponding to k specimens.
+
+        One of the following
+        
+        * **Single specimen** A (p,k) array of p landmarks in k dimensions for
+          one specimen.
+
+        * **n specimens** A (n,p,k) array of n landmark sets for n specimens, 
+          each having p landmarks in k dimensions.
 
     Returns
     -------
