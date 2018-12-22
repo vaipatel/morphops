@@ -10,15 +10,18 @@ def get_position(lmks):
     ----------
     lmks : np.ndarray or list
         One of
-        1. A (nl x d) set of landmarks corresponding to a single specimen.
-        2. A (k x nl x d) set of k landmark sets corresponding to k specimens.
+        1. A (p,k)-shaped array of landmarks corresponding to a single specimen.
+        2. A (n,p,k)-shaped array of landmark sets corresponding to n specimens.
 
     Returns
     -------
     centroid : np.array
         One of
-        1. A d-dimensional array whose ith entry is the mean of the ith landmark coordinate in `lmks`.
-        2. A (k x d)-dimensional array whose kth element is the d-dimensional centroid of the kth specimen's landmarks in `lmks`.
+        1. If `lmks` is a (p,k) array, then `centroid` is a (k,)-shaped array, 
+        whose ith entry is the mean of the ith landmark coordinate in `lmks`.
+        2. If `lmks` is a (n,p,k) array, then `centroid` is a (n,k)-shaped 
+        array whose ith element is the (k,)-shaped centroid of the ith 
+        specimen's landmarks in `lmks`.
     """
     lmks_shape_dim = len(np.shape(lmks))
     if (lmks_shape_dim != 2) and (lmks_shape_dim !=3):
