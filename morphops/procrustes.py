@@ -29,7 +29,7 @@ def get_position(lmks):
 
     Parameters
     ----------
-    lmks : np.ndarray or list
+    lmks : array-like
 
         One of the following
         
@@ -41,7 +41,7 @@ def get_position(lmks):
 
     Returns
     -------
-    centroid : np.array
+    centroid : numpy.ndarray
 
         * If `lmks` is a (p,k) array, then `centroid` is a (k,)-shaped array,
           whose i-th element is the mean of the i-th coordinate in `lmks`.
@@ -65,8 +65,8 @@ def get_scale(lmks):
 
     Note
     ----
-    `lmks` is not assumed to have been centered. To center the
-    landmarks you can call `remove_position(lmks)`.
+    `lmks` is not assumed to have been pre-centered. To pre-center `lmks` you 
+    can call :func:`remove_position` on `lmks` before applying `remove_scale`.
 
     Todo
     ----
@@ -74,7 +74,7 @@ def get_scale(lmks):
 
     Parameters
     ----------
-    lmks : np.ndarray or list
+    lmks : array-like
 
         One of the following
         
@@ -86,14 +86,14 @@ def get_scale(lmks):
 
     Returns
     -------
-    scale : float or np.ndarray
+    scale : numpy.float64 or numpy.ndarray
 
-        * If `lmks` is (p,k)-shaped, `scale` is a float representing its
-          euclidean norm.
+        * **Single specimen** If `lmks` is (p,k)-shaped, `scale` is a float
+          representing its euclidean norm.
         
-        * If `lmks` is (n,p,k)-shaped, `scale` is an (n,)-shaped array such 
-          that the i-th element is the euclidean norm of the i-th specimen's
-          landmarks.
+        * **n specimens** If `lmks` is (n,p,k)-shaped, `scale` is an (n,)
+          -shaped array such that the i-th element is the euclidean norm of the
+          i-th specimen's landmarks.
     """
     lmks_shape_dim = len(np.shape(lmks))
     if (lmks_shape_dim != 2) and (lmks_shape_dim !=3):
@@ -102,13 +102,13 @@ def get_scale(lmks):
     return np.linalg.norm(lmks, axis=axis)
 
 def remove_position(lmks, position=None):
-    """If `position` is None, :func:`remove_position` translates `lmks` such 
+    """If `position` is `None`, :func:`remove_position` translates `lmks` such 
     that :func:`get_position()` of `translated_lmks` is the origin. Else it is 
     the (:func:`get_position()` of `lmks`) - `position`.
 
     Parameters
     ----------
-    lmks : np.ndarray or list
+    lmks : array-like
 
         One of the following
         
@@ -120,17 +120,17 @@ def remove_position(lmks, position=None):
 
     Returns
     -------
-    translated_lmks: np.array
+    translated_lmks: numpy.ndarray
 
         * **Single specimen** If `lmks` is (p,k)-shaped, `translated_lmks` is
           (p,k)-shaped such that the centroid of `translated_lmks` + `position`
           = centroid of `lmks`. When `position` is None, it is taken to be the
           centroid of `lmks`, which means `translated_lmks` is at the origin.
         
-        * If `lmks` is (n,p,k)-shaped, `translated_lmks` is (n,p,k)-shaped such
-          that the i-th element of `translated_lmks` is related to the i-th
-          specimen of `lmks` by a translation calculated as per the single
-          specimen case.
+        * **n specimens** If `lmks` is (n,p,k)-shaped, `translated_lmks` is
+          (n,p,k)-shaped such that the i-th element of `translated_lmks` is
+          related to the i-th specimen of `lmks` by a translation calculated as
+          per the single specimen case.
     """
     lmks_shape_dim = len(np.shape(lmks))
     pos = np.array(position) if position is not None else get_position(lmks)
@@ -140,14 +140,18 @@ def remove_position(lmks, position=None):
         return lmks - pos[:, np.newaxis, :]
     
 def remove_scale(lmks, scale=None):
-    """Scales the landmarks in `lmks` such that :func:`get_scale()` equals the euclidean norm divided by `scale` if `scale` is valid, else 1.
+    """If `scale` is `None`, :func:`remove_scale` scales `lmks` such that 
+    :func:`get_scale()` of `scaled_lmks` is 1. Else it is (:func:`get_scale` of 
+    `lmks`)/`scale`.
 
-    Note `lmks` is not assumed to have been centered. To center the
-    landmarks you may call `remove_position(lmks)`.
+    Note
+    ----
+    `lmks` is not assumed to have been pre-centered. To pre-center `lmks` you 
+    can call :func:`remove_position` on `lmks` before applying `remove_scale`.
 
     Parameters
     ----------
-    lmks : np.ndarray or list
+    lmks : array-like
 
         One of the following
         
@@ -159,10 +163,17 @@ def remove_scale(lmks, scale=None):
 
     Returns
     -------
-    np.array
-        One of
-        1. A (nl x d) landmark set with scale euclidean_norm/`scale` if `scale` is valid, else 1.
-        2. A (k x nl x d) set of k landmark sets, each with scale (respective euclidean_norm/`scale`) if `scale` is valid, else 1.
+    scaled_lmks: numpy.ndarray
+
+        * **Single specimen** If `lmks` is (p,k)-shaped, `scaled_lmks` is
+          (p,k)-shaped such that the norm of `scaled_lmks` x `scale`
+          = norm of `lmks`. When `scale` is `None`, it is taken to be the
+          norm of `lmks`, which means `scaled_lmks` has norm 1.
+        
+        * **n specimens** If `lmks` is (n,p,k)-shaped, `scaled_lmks` is
+          (n,p,k)-shaped such that the i-th element of `scaled_lmks` is
+          related to the i-th specimen of `lmks` by a scaling calculated as
+          per the single specimen case.
     """
     scale_ = scale if (scale is not None) else get_scale(lmks)
     lmks_shape = np.shape(lmks)
@@ -173,35 +184,49 @@ def remove_scale(lmks, scale=None):
 def rotate(source, target, no_reflect=False):
     """Rotates the landmark set `source` so as to minimize its sum of squared interlandmark distances to `target`.
 
-    By default `rotate` will also reflect `source` if it offers a better alignment to `target`. This behavior can be switched off by setting the optional parameter `no_reflect` to True, in which case `source` will be aligned to `target` using a pure rotation belonging in SO(d).
+    Say X=`source` and Y=`target`. By default :func:`rotate` tries to find
 
-    ### Todo
+    .. math:: \operatorname*{argmin}_{R \in O(d)} \| Y - XR \|^2
+
+    That is, if `no_reflect` is `False`, :func:`rotate` might possibly reflect 
+    X if it would achieve better alignment to Y. This behavior can be switched 
+    off by setting `no_reflect` to `True`, in which case X will be aligned to Y 
+    using a pure rotation :math:`R \in SO(d)`.
+
+    Todo
+    ----
     1. Handle when values are NaN.
 
-    ### References
+    References
+    ----------
     1. Sorkine-Hornung, Olga, and Michael Rabinovich. "Least-squares rigid motion using svd." no 3 (2017): 1-5. 
-    I found a pdf here: https://igl.ethz.ch/projects/ARAP/svd_rot.pdf
+    `I found a pdf here <https://igl.ethz.ch/projects/ARAP/svd_rot.pdf>`_.
 
     Parameters
     ----------
-    source : np.ndarray or list
-        A (nl x d) set of landmarks corresponding to the source shape.
+    source : array-like
+        A (p,k)-shaped landmark set corresponding to the source shape.
 
-    target : np.ndarray or list
-        A (nl x d) set of landmarks corresponding to the target shape.
+    target : array-like
+        A (p,k)-shaped landmark set corresponding to the target shape.
 
     no_reflect : bool, optional
-        Flag indicating whether the best alignment should exclude reflection (default is False, which means reflection will be used if it achieves better alignment).
+        Flag indicating whether the best alignment should exclude reflection 
+        (default is False, which means reflection will be used if it achieves 
+        better alignment).
 
     Returns
     -------
     result: dict
-        src_ald: np.array
-            A (nl x d) landmark set consisting of the `source` landmarks rotated to the `target`.
-        R: np.array
-            A (d x d) array representing the right rotation matrix.
-        D: np.array
-            A (1 x d) array representing the diagonal matrix of the SVD of np.dot(target.T, source).
+        src_ald: numpy.ndarray
+            A (p,k)-shaped landmark set consisting of the `source` landmarks 
+            rotated to the `target`.
+        
+        R: numpy.ndarray
+            A (k,k)-shaped array representing the right rotation matrix.
+        
+        D: numpy.ndarray
+            A (k,)-shaped array representing the diagonal matrix of the SVD of np.dot(target.T, source).
     """
     result = {'src_ald': None, 'R': None, 'D': None}
     # Get the (d x d) covariance between target and source.
