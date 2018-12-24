@@ -1,15 +1,18 @@
+import os
 from setuptools import setup, find_packages
-
+from version_helper import get_version
 
 with open('README.rst') as f:
     readme = f.read()
 
 with open('LICENSE') as f:
-   license = f.read()
+    license = f.read()
+
+version, _ = get_version()
 
 setup(
     name='morphops',
-    version='0.1.0',
+    version=version,
     description='Geometric morphometrics operations in python',
     long_description=readme,
     author='Vai Patel',
@@ -22,5 +25,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering'
     ],
-    install_requires= ['numpy']
+    install_requires= ['numpy'],
+    include_package_data=True
 )

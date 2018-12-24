@@ -14,10 +14,12 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../morphops'))
 sys.setrecursionlimit(1500)
 
+from version_helper import get_version
 
 # -- Project information -----------------------------------------------------
 
@@ -25,10 +27,11 @@ project = 'Morphops'
 copyright = '2018, Vai Patel'
 author = 'Vai Patel'
 
+v_long, v_short = get_version()
 # The short X.Y version
-version = '0.1'
+version = v_short
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = v_long
 
 
 # -- General configuration ---------------------------------------------------

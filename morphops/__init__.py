@@ -27,5 +27,10 @@ from .procrustes import \
     get_position, get_scale, remove_position, remove_scale, \
     rotate, opa, gpa
 
-VERSION = "0.1.0"
+# Set __version__ from the VERSION file.
+from version_helper import get_version
+
+__version__, _ = get_version()
+
+VERSION = __version__
 """The version of this module."""
