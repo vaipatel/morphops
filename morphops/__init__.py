@@ -27,5 +27,5 @@ from .procrustes import \
     get_position, get_scale, remove_position, remove_scale, \
     rotate, opa, gpa
 
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 """The version of this module."""
