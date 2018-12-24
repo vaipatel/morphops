@@ -4,6 +4,11 @@
 import numpy as np
 
 def num_lmk_sets(X):
+    """Returns the number of landmark sets n in `X`.
+
+    `X` must be a 3-D tensor of shape (n,p,k) corresponding to a set of 
+    n landmark sets.
+    """
     if (len(np.shape(X)) is not 3):
         raise ValueError("The input X must be a 3-D tensor of shape "
         "(n x p x k) corresponding to n landmark sets, each consisting "
@@ -11,6 +16,17 @@ def num_lmk_sets(X):
     return np.shape(X)[0]
 
 def num_lmks(X):
+    """Returns the number of landmarks per set p in `X`.
+
+    `X` can be
+
+    * a 2-D tensor of shape (p,k) corresponding to a landmark set of p 
+      landmarks, or
+
+    * a 3-D tensor of shape (n,p,k) corresponding to a set of n landmark sets, 
+      each containing p landmarks.
+
+    """
     X_shape = np.shape(X)
     X_d_sz = len(X_shape)
     if X_d_sz < 2:
@@ -18,6 +34,19 @@ def num_lmks(X):
     return X_shape[X_d_sz - 2]
 
 def num_coords(X):
+    """Returns the number of coordinates per landmark k in `X`.
+
+    `X` can be
+
+    * a 1-D tensor of shape (k,) corresponding to a landmark point having k 
+      coordinates.
+
+    * a 2-D tensor of shape (p,k) corresponding to a landmark set of p 
+      landmarks, each having k coordinates, or
+      
+    * a 3-D tensor of shape (n,p,k) corresponding to a set of n landmark sets, 
+      each containing p landmarks, each having k coordinates.
+    """
     X_shape = np.shape(X)
     X_d_sz = len(X_shape)
     if X_d_sz < 1:
