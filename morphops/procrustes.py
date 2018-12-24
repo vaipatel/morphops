@@ -1,4 +1,4 @@
-"""Provides common procrustes alignment related operations and algorithms.
+"""Provides procrustes alignment related operations and algorithms.
 
 For geometric morphometrics based studies, after landmark data are 
 collected for each specimen, a typical next step is to remove the position, 
@@ -186,12 +186,12 @@ def rotate(source, target, no_reflect=False):
 
     Say X=`source` and Y=`target`. By default :func:`rotate` tries to find
 
-    .. math:: \operatorname*{argmin}_{R \in O(d)} \| Y - XR \|^2
+    .. math:: \operatorname*{argmin}_{R \in O(k)} \| Y - XR \|^2
 
     That is, if `no_reflect` is `False`, :func:`rotate` might possibly reflect 
     X if it would achieve better alignment to Y. This behavior can be switched 
     off by setting `no_reflect` to `True`, in which case X will be aligned to Y 
-    using a pure rotation :math:`R \in SO(d)`.
+    using a pure rotation :math:`R \in SO(k)`.
 
     Todo
     ----
@@ -259,11 +259,36 @@ def rotate(source, target, no_reflect=False):
     return result
 
 def opa(source, target, do_scaling=False, no_reflect=False):
-    """Perform ordinary procrustes alignment from source to target.
+    """Perform Ordinary Procrustes Alignment from source to target.
 
-    ...todo...::
-        Handle degenerate source, target landmarks.
-        Handle fewer landmarks in source.
+    Say X=`source` and Y=`target` and `do_scaling` = `True`. 
+    :func:`opa` tries to find
+
+    .. math:: \operatorname*{argmin}_{\\beta > 0,\ R \in O(k),\ \gamma \in \mathbb{R}^k } D^2_{\mathtt{OPA}}(X, Y) = \| Y - \\beta X R - \mathbf{1_k} \gamma^T \|^2
+
+    If `do_scaling` = `False`, :math:`\\beta = 1`. If `no_reflect` = `True`, 
+    then just as in :func:`rotate`, :func:`opa` will force :math:`R \in SO(k)`.
+
+    Parameters
+    ----------
+    source : array-like
+        A (p,k)-shaped landmark set corresponding to the source shape.
+
+    target : array-like
+        A (p,k)-shaped landmark set corresponding to the target shape.
+
+    no_reflect : bool, optional
+        Flag indicating whether the best alignment should exclude reflection 
+        (default is False, which means reflection will be used if it achieves 
+        better alignment).
+
+    Todo
+    ----
+    * Handle degenerate source, target landmarks.
+
+    * Handle fewer landmarks in source.
+
+
     """
     result = { 'oss': None, 'oss_stdized': None, 'b': None, 'R': None, 'c': None, 'src_ald': None }
     # 1. Remove position information

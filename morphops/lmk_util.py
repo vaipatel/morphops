@@ -1,3 +1,6 @@
+"""Provides common functions used in the module.
+"""
+
 import numpy as np
 
 def num_lmk_sets(X):
