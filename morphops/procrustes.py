@@ -223,7 +223,8 @@ def rotate(source, target, no_reflect=False):
             rotated to the `target`.
         
         R: numpy.ndarray
-            A (k,k)-shaped array representing the right rotation matrix.
+            A (k,k)-shaped array representing the right rotation matrix by 
+            which `source` is rotated.
         
         D: numpy.ndarray
             A (k,)-shaped array representing the diagonal matrix of the SVD of np.dot(target.T, source).
@@ -277,10 +278,37 @@ def opa(source, target, do_scaling=False, no_reflect=False):
     target : array-like
         A (p,k)-shaped landmark set corresponding to the target shape.
 
+    do_scaling : bool, optional
+        Flag indicating whether the best alignment should also find the optimal 
+        :math:`\\beta` that minimizes :math:`D^2_{\mathtt{OPA}}`. The default 
+        value of `do_scaling` is False, which means :math:`\\beta = 1`, or in 
+        other words, `source` will not be scaled.
+
     no_reflect : bool, optional
         Flag indicating whether the best alignment should exclude reflection 
         (default is False, which means reflection will be used if it achieves 
         better alignment).
+
+    Returns
+    -------
+    result: dict
+        src_ald: numpy.ndarray
+            A (p,k)-shaped landmark set consisting of the `source` landmarks 
+            aligned to the `target`.
+
+        b: numpy.float64 or int
+            A number representing the scaling factor :math:`\\beta` by which 
+            `source` is scaled.
+        
+        R: numpy.ndarray
+            A (k,k)-shaped array representing the right rotation matrix by 
+            which `source` is rotated.
+        
+        c: numpy.ndarray
+            A (k,)-shaped array representing the displacement between the 
+            centroids of `target` and the scaled+rotated `source`.
+        
+        oss_stdized: 
 
     Todo
     ----

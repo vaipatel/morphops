@@ -1,5 +1,9 @@
 """This helper lets different parts of the code and the setup.py access the 
 value of version specified in the VERSION file.
+
+TODO
+----
+Use something like `packaging` if possible so as to not reinvent wheel.
 """
 
 import os
