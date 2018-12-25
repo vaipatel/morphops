@@ -5,9 +5,6 @@ from version_helper import get_version
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-with open('LICENSE') as lic_file:
-    lic = lic_file.read()
-
 version, _ = get_version()
 
 setup(
