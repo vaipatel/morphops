@@ -19,7 +19,7 @@ setup(
     author='Vai Patel',
     author_email='vai.patel@gmail.com',
     url='https://github.com/vaipatel/morphops',
-    license=lic,
+    license='MIT',
     packages=find_packages(exclude=('tests', 'docs')),
     classifiers = [
         'Programming Language :: Python :: 3.6',
