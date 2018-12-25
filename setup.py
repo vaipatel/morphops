@@ -15,6 +15,7 @@ setup(
     version=version,
     description='Geometric morphometrics operations in python',
     long_description=readme,
+    long_description_content_type='text/x-rst',
     author='Vai Patel',
     author_email='vai.patel@gmail.com',
     url='https://github.com/vaipatel/morphops',
