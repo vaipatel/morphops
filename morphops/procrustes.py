@@ -270,6 +270,21 @@ def opa(source, target, do_scaling=False, no_reflect=False):
     If `do_scaling` = `False`, :math:`\\beta = 1`. If `no_reflect` = `True`, 
     then just as in :func:`rotate`, :func:`opa` will force :math:`R \in SO(k)`.
 
+    The Ordinary (Procrustes) Sum of Squares or OSS is defined as
+
+    .. math:: OSS(X, Y) = \operatorname*{min}_{\\beta > 0,\ R \in O(k),\ \gamma \in \mathbb{R}^k } D^2_{\mathtt{OPA}}(X, Y)
+
+    Note
+    ----
+    Generally for :func:`opa`, :math:`OSS(X1, X2) \\neq OSS(X2, X1)`.
+
+    In contrast to :func:`opa`, :func:`gpa` is symmetric for the input matrices 
+    in that :math:`G(X1, X2) = G(X2, X1)`.
+
+    See Also
+    --------
+    rotate, gpa
+
     Parameters
     ----------
     source : array-like
@@ -301,14 +316,25 @@ def opa(source, target, do_scaling=False, no_reflect=False):
             `source` is scaled.
         
         R: numpy.ndarray
-            A (k,k)-shaped array representing the right rotation matrix by 
-            which `source` is rotated.
+            A (k,k)-shaped array representing the right rotation matrix 
+            :math:`R` by which `source` is rotated.
         
         c: numpy.ndarray
-            A (k,)-shaped array representing the displacement between the 
-            centroids of `target` and the scaled+rotated `source`.
+            A (k,)-shaped array representing the displacement :math:`\gamma` 
+            between the centroids of `target` and the scaled+rotated `source`.
         
-        oss_stdized: 
+        oss: numpy.float64
+            This number represents the Ordinary (Procrustes) Sum of Squares, 
+            which is the minimum of :math:`D^2_{\mathtt{OPA}}`. Essentially, 
+            the `oss` is the result of plugging in the optimal :math:`\\beta`, 
+            :math:`R` and :math:`\gamma` into the :math:`D^2_{\mathtt{OPA}}` 
+            objective.
+        
+        oss_stdized: numpy.float64
+            This number is the Ordinary Sum of Squares `oss`, divided by the 
+            squared norm of the centered target matrix. Loosely speaking it is 
+            a kind of "normalization" or "relativization" of the disparity in 
+            the `source` and `target` that is captured by the `oss`.
 
     Todo
     ----
