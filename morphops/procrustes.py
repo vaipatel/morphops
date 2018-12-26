@@ -260,7 +260,9 @@ def rotate(source, target, no_reflect=False):
     return result
 
 def opa(source, target, do_scaling=False, no_reflect=False):
-    """Perform Ordinary Procrustes Alignment from source to target.
+    """Performs Ordinary Procrustes Alignment to transform the landmark set 
+    `source` such that the squared Euclidean distance between `source` and 
+    `target` is minimized.
 
     Say X=`source` and Y=`target` and `do_scaling` = `True`. 
     :func:`opa` tries to find
@@ -394,7 +396,120 @@ def opa(source, target, do_scaling=False, no_reflect=False):
 
 def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         no_reflect=False, unitize_mean=False):
-    """Perform Generalized Procrustes Alignment on all lmk sets in X.
+    """Performs Generalized Procrustes Alignment to transform all the landmark 
+    sets in `X` such that (a quantity proportional to) the sum of squared norms 
+    of pairwise differences between all the landmark sets is minimized.
+
+    Say :code:`len(X) = n`. :func:`gpa` tries to find
+
+    .. math:: \operatorname*{argmin}_{\\beta_i > 0,\ R_i \in O(k),\ \gamma_i \in \mathbb{R}^k } g(X) = \\frac{1}{n} \sum_{i=1}^{n-1} { \sum_{j=i+1}^n {\| (\\beta_i X_i R_i + \mathbf{1_k} \gamma_i^T) - (\\beta_j X_j R_j + \mathbf{1_k} \gamma_j^T) \|^2}}
+
+    The Generalized (Procrustes) Sum of Squares or G is defined as
+
+    .. math:: G(X) = \operatorname*{inf}_{\\beta_i > 0,\ R_i \in O(k),\ \gamma_i \in \mathbb{R}^k } g(X)
+
+    The GPA algorithm, per [drymar]_, tries to iteratively rotate and scale the 
+    landmark sets in `X` until the sum of squared differences is below `tol`. 
+    While the algorithm should converge quite fast, it can be forced to stop 
+    the minimization loop after `max_iters` number of iterations.
+
+    For an explanation of the other parameters, please see the Parameters 
+    section.
+
+    Note
+    ----
+    Re `do_project` and `do_scaling`: The projection used here is based on 
+    [rohlf]_ and assumes that the aligned shapes are of unit centroid size, 
+    which is not generally true when `do_scaling` is `True`. Consequently, if 
+    both `do_project` and `do_scaling` are `True`, :func:`gpa` will issue a 
+    warning, but proceed with the projection.
+
+    Note
+    ----
+    Generally for :func:`opa`, :math:`OSS(X1, X2) \\neq OSS(X2, X1)`.
+
+    In contrast to :func:`opa`, :func:`gpa` is symmetric for the input matrices 
+    in that :math:`G(X1, X2) = G(X2, X1)`.
+
+    See Also
+    --------
+    rotate, opa
+
+    Parameters
+    ----------
+    X : array-like
+        A (n,p,k)-shaped set of landmark sets that have to be aligned to each 
+        other.
+
+    tol : float, optional
+        The sum of squared differences value that will be considered "low 
+        enough" by the iterative rotation and scaling. The iterations will 
+        continue until `tol` has been achieved or `max_iters` is reached, 
+        whichever comes first.
+
+    max_iters : int, optional
+        The maximum number of iterations that the iterative rotation and 
+        scaling is allowed to run for. The iterations will continue until `tol` 
+        has been achieved or `max_iters` is reached, whichever comes first.
+
+    do_scaling : bool, optional
+        If `False`, :math:`\\beta_i = \\frac{1}{\| X'_i \|}`, where 
+        :math:`X'_i` is the mean-centered :math:`X_i`. Else :math:`\\beta_i` is 
+        calculated as per [tenb]_.
+
+    do_project: bool, optional
+        If `True`, the final aligned landmarks are orthogonally projected to 
+        the tangent space at the mean of aligned landmark sets `X0_ald_mu`, 
+        using equation 1 in [rohlf]_.
+
+    no_reflect : bool, optional
+        Flag indicating whether the best alignment should exclude reflection 
+        (default is False, which means reflection will be used if it achieves 
+        better alignment).
+
+    unitize_mean: bool, optional
+        Flag indicating whether the mean of aligned landmark sets `X0_ald_mu` 
+        should be rescaled to have unit centroid size.
+
+    Returns
+    -------
+    result: dict
+        X0_ald: numpy.ndarray
+            A (n,p,k)-shaped set of aligned landmark sets.
+        
+        X0_ald_mu: numpy.ndarray
+            A (p,k)-shaped array representing the mean of the procrustes aligned landmark sets `X0_ald`.
+        
+        X0_b: numpy.ndarray
+            A (n,)-shaped array representing the scaling factor 
+            :math:`\\beta_i` by which the centered :math:`X'_i` is scaled.
+        
+        ssq: numpy.float64
+            This number represents the Generalized (Procrustes) Sum of Squares, 
+            which is the infinimum of :math:`g`. Essentially, 
+            the `ssq` is the result of plugging in the optimal :math:`\\beta_i`,
+            :math:`R_i` and :math:`\gamma_i` into the :math:`g` objective.
+        
+    Warns
+    -----
+    UserWarning
+        If both `do_project` and `do_scaling` are `True`
+
+    References
+    ----------
+    .. [drymar] Dryden, I.L. and Mardia, K.V., 1998. Statistical shape analysis.
+    .. [tenb] Ten Berge, J.M., 1977. Orthogonal Procrustes rotation for two or 
+              more matrices. Psychometrika, 42(2), pp.267-276.
+    .. [rohlf] Rohlf, F.J., 1999. Shape statistics: Procrustes superimpositions 
+               and tangent spaces. Journal of Classification, 16(2), pp.197-223.
+
+    Todo
+    ----
+    * Handle degenerate source, target landmarks.
+
+    * Handle fewer landmarks in source.
+
+
     """
     res = {'X0_ald': None, 'X0_ald_mu': None, 'X0_b': None, 'ssq': None}
     n_lmk_sets = lmk_util.num_lmk_sets(X)
