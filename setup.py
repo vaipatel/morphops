@@ -1,15 +1,16 @@
 import os
 from setuptools import setup, find_packages
-from version_helper import get_version
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-version, _ = get_version()
+version = {}
+with open("morphops/_version.py") as version_file:
+    exec(version_file.read(), version)
 
 setup(
     name='morphops',
-    version=version,
+    version=version['__version__'],
     description='Geometric morphometrics operations in python',
     long_description=readme,
     long_description_content_type='text/x-rst',
