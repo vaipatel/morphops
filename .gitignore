@@ -23,3 +23,6 @@ trying_stuff
 
 # Sphinx
 docs/build
+
+# Tox
+.tox
