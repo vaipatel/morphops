@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.com/vaipatel/morphops.svg?branch=master
+    :target: https://travis-ci.com/vaipatel/morphops
+
 Welcome to Morphops!
 ====================
 
