@@ -13,9 +13,10 @@ Submodules
 .. autosummary::
     :toctree: _autosummary
 
-    lmk_util
-    io
     procrustes
+    tps
+    io
+    lmk_util
 """
 
 # Not sure if prepending morphops to module is necessary, but makes it easier to import into jupyter for testing.
