@@ -23,6 +23,7 @@ from .lmk_util import \
     transpose, num_coords, num_lmks, num_lmk_sets, ssqd, distance_matrix
 from .io import \
     MopsFileReadError, MopsFileWriteError, read_dta, write_dta
+from .tps import *
 from .procrustes import \
     get_position, get_scale, remove_position, remove_scale, \
     rotate, opa, gpa
