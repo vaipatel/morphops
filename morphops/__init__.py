@@ -20,7 +20,7 @@ Submodules
 
 # Not sure if prepending morphops to module is necessary, but makes it easier to import into jupyter for testing.
 from .lmk_util import \
-    transpose, num_coords, num_lmks, num_lmk_sets, ssqd
+    transpose, num_coords, num_lmks, num_lmk_sets, ssqd, distance_matrix
 from .io import \
     MopsFileReadError, MopsFileWriteError, read_dta, write_dta
 from .procrustes import \

@@ -76,3 +76,20 @@ def ssqd(X):
     for i in np.arange(n_lmk_sets - 1):
         ssq += np.sum(np.square(X[i:] - X[i]))
     return ssq*1.0/n_lmk_sets
+
+def distance_matrix(X,Y):
+    """For (p1,k)-shaped X and (p2,k)-shaped Y, returns the (p1,p2) matrix 
+    where the element at [i,j] is the distance between X[i,:] and Y[j,:].
+
+    This is basically a matrix version of the following code.
+
+    .. code-block:: python
+
+        for i in range(len(X)):
+            for j in range(len(Y)):
+                d[i,j] = np.sqrt(np.sum(np.square(np.array(X[i]) - np.array(Y[j]))))
+    """
+    XX = np.tile(np.sum(np.square(X),axis=1),(len(Y),1)).T
+    YY = np.tile(np.sum(np.square(Y),axis=1),(len(X),1))
+    XY = np.dot(X, transpose(Y))
+    return np.sqrt(XX + YY - 2*XY)
