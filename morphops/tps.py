@@ -108,6 +108,24 @@ def L_matrix(X):
     L[n_lmks:,0:n_lmks] = np.transpose(P)
     return L
 
+def bending_energy_matrix(X):
+    """Returns the upper right (pxp) submatrix of L^(-1).
+
+    Parameters
+    ----------
+    X : (p,2) or (p,3) shaped array-like
+        A (p,k) array of p landmarks in k=2 or k=3 dimensions for one specimen.
+
+    Returns
+    -------
+    L_inv : np.ndarray
+        The upper right (p,p) submatrix of the inverse of the `L_matrix` of `X`.
+    """
+    n_lmks = lmk_util.num_lmks(X)
+    L = L_matrix(X)
+    L_inv = np.linalg.inv(L)
+    return L_inv[0:n_lmks,0:n_lmks]
+
 def tps_coefs(X, Y):
     """Finds the thin-plate spline coefficients for the thin-plate spline 
     function that interpolates from X to Y.
