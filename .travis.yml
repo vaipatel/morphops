@@ -12,7 +12,7 @@ matrix:
       dist: xenial
       sudo: true
 
-install: pip install tox
+install: pip install tox-travis
 
 script: tox
 
