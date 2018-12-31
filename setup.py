@@ -24,6 +24,8 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering'
     ],
-    install_requires= ['numpy>=1.10.0'],
+    setup_requires= ['numpy >= 1.10.0'],
+    install_requires= ['numpy >= 1.10.0'],
+    python_requires='>=3.5',
     include_package_data=True
 )
