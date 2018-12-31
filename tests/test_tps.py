@@ -43,9 +43,9 @@ tps_warp_affine_data = [(fourgon, fourgon + 1,
                 fourgon, fourgon + 1, 
                 "X is a square of side sqrt(2), Y = X + (1,1), pts = X. "
                 "Result should Y."),
-                (fourgon, fourgon_45, 
+                (pentagon, pentagon_45, 
                 fourgon, np.dot(fourgon, get_2d_rot(-np.pi/4)), 
-                "X is a square of side sqrt(2), Y = XR, pts = square. Result "
+                "X is a pentagon, Y = XR, pts = square. Result "
                 "should be pts*R.T." 
                 )]
 
