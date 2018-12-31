@@ -149,9 +149,9 @@ def tps_coefs(X, Y):
     """
     n_coords = lmk_util.num_coords(X)
     n_lmks = lmk_util.num_lmks(X)
+    Y_0 = np.row_stack((Y, np.zeros((n_coords+1,n_coords))))
     L = L_matrix(X)
     L_inv = np.linalg.inv(L)
-    Y_0 = np.row_stack((Y, np.zeros((n_coords+1,n_coords))))
     Q = np.dot(L_inv, Y_0)
     # return W and A.
     return Q[0:n_lmks], Q[n_lmks:]
