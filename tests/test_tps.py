@@ -4,13 +4,15 @@ import morphops.tps as tps
 from .helpers import make_haus, make_ngon, get_2d_rot
 
 pentagon = make_ngon(5)
-pentagon_45 = make_ngon(5, np.pi/4)
+pentagon_45 = make_ngon(5, np.pi/4.0)
+fourgon = make_ngon(4)
+fourgon_45 = make_ngon(4, np.pi/4.0)
 
 K_matrix_2_data = [(np.zeros((5,2)), None, np.zeros((5,5)),
                   "X is (p,2) zeros. The result should be (p,p) zeros."),
                  (np.ones((5,2)), None, np.zeros((5,5)),
                  "X is (p,2) ones. The result should be (p,p) zeros."),
-                 (make_ngon(4), None, 
+                 (fourgon, None, 
                  [[0, 2*np.log(2), 8*np.log(2), 2*np.log(2)],
                   [2*np.log(2), 0, 2*np.log(2), 8*np.log(2)],
                   [8*np.log(2), 2*np.log(2), 0, 2*np.log(2)],
@@ -18,7 +20,7 @@ K_matrix_2_data = [(np.zeros((5,2)), None, np.zeros((5,5)),
                  "X is square of side sqrt(2). Result should be same as in 89 "
                  "paper, sec E.")]
 
-K_matrix_3_data = [(np.column_stack((np.ones(4),make_ngon(4))), None, 
+K_matrix_3_data = [(np.column_stack((np.ones(4),fourgon)), None, 
                   [[0, np.sqrt(2), 2, np.sqrt(2)],
                    [np.sqrt(2), 0, np.sqrt(2), 2],
                    [2, np.sqrt(2), 0, np.sqrt(2)],
@@ -26,25 +28,25 @@ K_matrix_3_data = [(np.column_stack((np.ones(4),make_ngon(4))), None,
                   "X is square of side sqrt(2). Result should be the distance "
                   "matrix.")]
 
-tps_coefs_affine_data = [(make_ngon(4), make_ngon(4) + 1, 
+tps_coefs_affine_data = [(fourgon, fourgon + 1, 
                 np.zeros((4,2)), [[1,1],[1,0],[0,1]], "X is a square of side "
                 "sqrt(2), Y = X + (1,1). Result should be that W is all "
                 "zeros and A is a row of ones stacked on identity." 
                 ),
-                (pentagon, pentagon_45, 
-                np.zeros((5,2)),np.row_stack(([0,0],get_2d_rot(-np.pi/4))), "X "
-                "is a pentagon, Y = XR. Result should be that W is all "
-                "zeros and A is a row of zeros stacked on R.T." 
+                (fourgon, fourgon_45, 
+                np.zeros((4,2)),np.row_stack(([0,0],get_2d_rot(-np.pi/4))),
+                "X is a square of side sqrt(2), Y = XR. Result should be that "
+                "W is all zeros and A is a row of zeros stacked on R.T." 
                 )]
 
-tps_warp_affine_data = [(make_ngon(4), make_ngon(4) + 1, 
-                make_ngon(4), make_ngon(4) + 1, 
+tps_warp_affine_data = [(fourgon, fourgon + 1, 
+                fourgon, fourgon + 1, 
                 "X is a square of side sqrt(2), Y = X + (1,1), pts = X. "
                 "Result should Y."),
-                (pentagon, pentagon_45, 
-                make_ngon(4), np.dot(make_ngon(4), get_2d_rot(-np.pi/4)), 
-                "X is a pentagon, Y = XR, pts = square. Result should be "
-                "pts*R.T." 
+                (fourgon, fourgon_45, 
+                fourgon, np.dot(fourgon, get_2d_rot(-np.pi/4)), 
+                "X is a square of side sqrt(2), Y = XR, pts = square. Result "
+                "should be pts*R.T." 
                 )]
 
 @pytest.mark.parametrize("X, Y, ans, scn", K_matrix_2_data)
