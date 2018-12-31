@@ -3,6 +3,9 @@ import numpy as np
 import morphops.tps as tps
 from .helpers import make_haus, make_ngon, get_2d_rot
 
+pentagon = make_ngon(5)
+pentagon_45 = make_ngon(5, np.pi/4)
+
 K_matrix_2_data = [(np.zeros((5,2)), None, np.zeros((5,5)),
                   "X is (p,2) zeros. The result should be (p,p) zeros."),
                  (np.ones((5,2)), None, np.zeros((5,5)),
@@ -24,11 +27,13 @@ K_matrix_3_data = [(np.column_stack((np.ones(4),make_ngon(4))), None,
                   "matrix.")]
 
 tps_coefs_affine_data = [(make_ngon(4), make_ngon(4) + 1, 
-                np.zeros((4,2)), [[1,1],[1,0],[0,1]], "X is a square of side sqrt(2), Y = X + (1,1). Result should be that W is all "
+                np.zeros((4,2)), [[1,1],[1,0],[0,1]], "X is a square of side "
+                "sqrt(2), Y = X + (1,1). Result should be that W is all "
                 "zeros and A is a row of ones stacked on identity." 
                 ),
-                (make_ngon(5), make_ngon(5, np.pi/4), 
-                np.zeros((5,2)),np.row_stack(([0,0],get_2d_rot(-np.pi/4))), "X is a pentagon, Y = XR. Result should be that W is all "
+                (pentagon, pentagon_45, 
+                np.zeros((5,2)),np.row_stack(([0,0],get_2d_rot(-np.pi/4))), "X "
+                "is a pentagon, Y = XR. Result should be that W is all "
                 "zeros and A is a row of zeros stacked on R.T." 
                 )]
 
@@ -36,8 +41,8 @@ tps_warp_affine_data = [(make_ngon(4), make_ngon(4) + 1,
                 make_ngon(4), make_ngon(4) + 1, 
                 "X is a square of side sqrt(2), Y = X + (1,1), pts = X. "
                 "Result should Y."),
-                (make_ngon(5), make_ngon(5, np.pi/4), 
-                make_ngon(4), np.matmul(make_ngon(4), get_2d_rot(-np.pi/4)), 
+                (pentagon, pentagon_45, 
+                make_ngon(4), np.dot(make_ngon(4), get_2d_rot(-np.pi/4)), 
                 "X is a pentagon, Y = XR, pts = square. Result should be "
                 "pts*R.T." 
                 )]
