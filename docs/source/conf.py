@@ -28,7 +28,7 @@ author = 'Vai Patel'
 # The short X.Y version
 version = '0.1'
 # The full version, including alpha/beta/rc tags
-release = '0.1.7a1'
+release = '0.1.7a2'
 
 # -- General configuration ---------------------------------------------------
 
