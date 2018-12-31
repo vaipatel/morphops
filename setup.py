@@ -25,7 +25,7 @@ setup(
         'Topic :: Scientific/Engineering'
     ],
     setup_requires= ['numpy >= 1.10.0'],
-    install_requires= ['numpy >= 1.10.0'],
+    install_requires= ['numpy >= 1.10.0', 'mkl'],
     python_requires='>=3.5',
     include_package_data=True
 )
