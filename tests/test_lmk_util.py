@@ -42,6 +42,12 @@ ssqd_data = [(np.zeros((3,4,2)), 0, "when X is all 0s, as 0."),
                "when X is the unit square + it's pi/4 rotated form, as "
                "4*[(1-cos(pi/4))^2 + cos(pi/4)^2]")]
 
+distance_matrix_data = [
+        (np.zeros((4,2)), np.zeros((5,2)), np.zeros((4,5)),
+        "when X is (p1,k) zeros and Y is (p2,k) zeros, as (pi,p2) zeros"),
+        ([[0,0],[0,1]],[[1,1],[1,0]],[[np.sqrt(2),1],[1,np.sqrt(2)]],
+        "when X and Y are oppo sides of a unit square, as 1s and sqrt(2)s")]
+
 @pytest.mark.parametrize("X, scn", num_lmk_sets_fail_data)
 def test_num_lmk_sets_fail(X, scn):
     print("num_lmk_sets should fail -", scn)
@@ -89,3 +95,10 @@ def test_ssqd(X, ans, scn):
     print("ssqd should give the sum of squared differences "
           "between all pairs of matrices -", scn)
     assert np.isclose(lmk_util.ssqd(X), ans)
+
+@pytest.mark.parametrize("X, Y, ans, scn", distance_matrix_data)
+def test_distance_matrix(X, Y, ans, scn):
+    print("distance_matrix should give the distance between each lmk in X "
+          "and Y when -", scn)
+    assert np.allclose(lmk_util.distance_matrix(X,Y), ans)
+    

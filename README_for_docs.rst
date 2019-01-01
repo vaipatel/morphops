@@ -1,6 +1,13 @@
 .. image:: https://travis-ci.com/vaipatel/morphops.svg?branch=master
     :target: https://travis-ci.com/vaipatel/morphops
 
+|
+
+.. contents::
+    :local:
+
+|
+
 Welcome to Morphops!
 ====================
 
@@ -9,10 +16,18 @@ morphometrics, in python 3.
 
 Some high-level operations in the current version are
 
-* Centering, rescaling data
-* Rigid Rotation, Ordinary and Generalized Procrustes alignment
-* Thin-plate spline warping
-* Reading from and writing to \*.dta files
+* Centering, rescaling data: \
+  :meth:`remove_position(lmk_sets) <morphops.procrustes.remove_position>`,
+  :meth:`remove_scale(lmk_sets) <morphops.procrustes.remove_scale>`
+* Rigid Rotation, Ordinary and Generalized Procrustes alignment: \
+  :meth:`rotate(src_sets,tar_sets) <morphops.procrustes.rotate>`,
+  :meth:`opa(src_set,tar_set) <morphops.procrustes.opa>`,
+  :meth:`gpa(all_sets) <morphops.procrustes.gpa>`
+* Thin-plate spline warping: \
+  :meth:`tps_warp(X, Y, pts) <morphops.tps.tps_warp>`
+* Reading from and writing to \*.dta files: \
+  :meth:`read_dta(fn) <morphops.io.read_dta>`,
+  :meth:`write_dta(fn,lmk_sets,names) <morphops.io.write_dta>`
 
 Dependencies
 ------------
