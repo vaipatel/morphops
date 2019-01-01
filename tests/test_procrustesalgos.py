@@ -55,24 +55,24 @@ class TestProcrustesAlgos(object):
                  "when X is haus0 and its y-refln, do_scaling, no_reflect. "
                  "Result is: mu is [(0,y_i)]*b, b is 1/(scale of haus0).")]
 
-    @pytest.mark.parametrize("source, target, no_reflect, src_ald, "
+    @pytest.mark.parametrize("source, target, no_reflect, aligned, "
                              "should_match_target, scn",
                              rotate_data)
-    def test_rotate(self, source, target, no_reflect, src_ald, 
+    def test_rotate(self, source, target, no_reflect, aligned, 
                     should_match_target, scn):
         print("rotate should solve argmin ||Y - XR||^2 -", scn)
         rot_res = procrustes.rotate(source, target, no_reflect)
-        assert np.allclose(rot_res['src_ald'], src_ald)
-        assert np.allclose(rot_res['src_ald'], target) == should_match_target
+        assert np.allclose(rot_res['aligned'], aligned)
+        assert np.allclose(rot_res['aligned'], target) == should_match_target
 
-    @pytest.mark.parametrize("source, target, do_scaling, no_reflect, src_ald, "
+    @pytest.mark.parametrize("source, target, do_scaling, no_reflect, aligned, "
                              "b, T, c, oss, oss_stdized, scn",
                              opa_data)
-    def test_opa(self, source, target, do_scaling, no_reflect, src_ald,
+    def test_opa(self, source, target, do_scaling, no_reflect, aligned,
                  b, T, c, oss, oss_stdized, scn):
         print("opa should min ||Y - bXR + 1*c.T||^2 -", scn)
         opa_res = procrustes.opa(source, target, do_scaling, no_reflect)
-        assert np.allclose(opa_res["src_ald"], src_ald)
+        assert np.allclose(opa_res["aligned"], aligned)
         assert np.allclose(opa_res["b"], b)
         assert np.allclose(opa_res["R"], T)
         assert np.allclose(opa_res["c"], c)
@@ -103,5 +103,5 @@ class TestProcrustesAlgos(object):
         print("gpa should perform gpa -", scn)
         res = procrustes.gpa(X, do_project=do_project, do_scaling=do_scaling,
                              no_reflect=no_reflect, unitize_mean=unitize_mean)
-        assert np.allclose(res['X0_ald_mu'], mu)
-        assert np.allclose(res['X0_b'], b)
+        assert np.allclose(res['mean'], mu)
+        assert np.allclose(res['b'], b)
