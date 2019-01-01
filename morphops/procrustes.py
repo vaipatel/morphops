@@ -459,7 +459,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
 
     do_project: bool, optional
         If `True`, the final aligned landmarks are orthogonally projected to 
-        the tangent space at the mean of aligned landmark sets `X0_ald_mu`, 
+        the tangent space at the mean of aligned landmark sets `aligned_mu`, 
         using equation 1 in [rohlf]_.
 
     no_reflect : bool, optional
@@ -468,19 +468,19 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         better alignment).
 
     unitize_mean: bool, optional
-        Flag indicating whether the mean of aligned landmark sets `X0_ald_mu` 
+        Flag indicating whether the mean of aligned landmark sets `aligned_mu` 
         should be rescaled to have unit centroid size.
 
     Returns
     -------
     result: dict
-        X0_ald: numpy.ndarray
+        aligned: numpy.ndarray
             A (n,p,k)-shaped set of aligned landmark sets.
         
-        X0_ald_mu: numpy.ndarray
-            A (p,k)-shaped array representing the mean of the procrustes aligned landmark sets `X0_ald`.
+        aligned_mu: numpy.ndarray
+            A (p,k)-shaped array representing the mean of the procrustes aligned landmark sets `aligned`.
         
-        X0_b: numpy.ndarray
+        aligned_b: numpy.ndarray
             A (n,)-shaped array representing the scaling factor 
             :math:`\\beta_i` by which the centered :math:`X'_i` is scaled.
         
@@ -511,7 +511,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
 
 
     """
-    res = {'X0_ald': None, 'X0_ald_mu': None, 'X0_b': None, 'ssq': None}
+    res = {'aligned': None, 'aligned_mu': None, 'aligned_b': None, 'ssq': None}
     n_lmk_sets = lmk_util.num_lmk_sets(X)
     n_lmks = lmk_util.num_lmks(X)
     n_coords = lmk_util.num_coords(X)
@@ -523,10 +523,10 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
     # 2. Remove scale (if not do_scaling, we're just doing partial procrustes)
     X0_norm = get_scale(X0)
     X0 = remove_scale(X0, X0_norm)
-    X0_b = np.reciprocal(X0_norm)
+    aligned_b = np.reciprocal(X0_norm)
     
     # 3. Rotate all lmk sets to the mean of all other lmk sets. Scale.
-    X0_ald = X0
+    aligned = X0
     ssq, ssq_old = None, None
     curr_iter = 0
     all_i = np.arange(n_lmk_sets)
@@ -542,62 +542,62 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
             ssq_old = ssq
             for i in range(n_lmk_sets):
                 # Get the mean of all but the ith lmk set
-                all_but_i = X0_ald[all_i != i]
+                all_but_i = aligned[all_i != i]
                 mean_for_i = (1.0/(n_lmk_sets-1))*np.sum(all_but_i, axis=0)
                 # Rotate all lmk sets to this mean
-                X0_ald = rotate(X0_ald, mean_for_i, no_reflect)['src_ald']
-            ssq = get_ssqd(X0_ald)
+                aligned = rotate(aligned, mean_for_i, no_reflect)['src_ald']
+            ssq = get_ssqd(aligned)
 
         # 3.2. Scale
         if do_scaling:
             # We first get the biggest eigvec the nxn corr matrix.
-            X0_ald_vecd = np.reshape(X0_ald, (n_lmk_sets, n_coords*n_lmks))
-            X0_corrcoef = np.corrcoef(X0_ald_vecd)
+            aligned_vecd = np.reshape(aligned, (n_lmk_sets, n_coords*n_lmks))
+            X0_corrcoef = np.corrcoef(aligned_vecd)
             eig_vals, eig_vecs = np.linalg.eigh(X0_corrcoef)
             sort_perm = eig_vals.argsort()
             phi = eig_vecs[:, sort_perm][:, -1]
             if np.all(phi < 0):
                 phi = np.abs(phi) # TODO: Is this okay to do?
             # The scale beta_i = sqrt(sum of sqd norms/ith sqd norm)*phi[i]
-            X0_ald_norm = get_scale(X0_ald)
-            X0_ald_ssq_norm = np.sqrt(np.sum(np.square(X0_ald)))
-            frac = np.reciprocal(X0_ald_norm, dtype=np.float64)*X0_ald_ssq_norm
+            aligned_norm = get_scale(aligned)
+            aligned_ssq_norm = np.sqrt(np.sum(np.square(aligned)))
+            frac = np.reciprocal(aligned_norm, dtype=np.float64)*aligned_ssq_norm
             beta = np.multiply(frac, phi)
-            # Rescale X0_ald[i] by b_i
-            X0_ald = np.multiply(X0_ald, np.reshape(beta, (n_lmk_sets,1,1)))
-            # Update X0_b
-            X0_b = np.multiply(X0_b, beta)
+            # Rescale aligned[i] by b_i
+            aligned = np.multiply(aligned, np.reshape(beta, (n_lmk_sets,1,1)))
+            # Update aligned_b
+            aligned_b = np.multiply(aligned_b, beta)
 
-        ssq = get_ssqd(X0_ald)
+        ssq = get_ssqd(aligned)
         curr_iter += 1
     
     print("ssq diff", ssq_old - ssq)
 
     # The mean is just the mean of the procrustes aligned lmk sets.
-    X0_ald_mu = (1.0/n_lmk_sets)*np.sum(X0_ald, axis=0)
+    aligned_mu = (1.0/n_lmk_sets)*np.sum(aligned, axis=0)
     if unitize_mean:
-        X0_ald_mu = remove_scale(X0_ald_mu)
+        aligned_mu = remove_scale(aligned_mu)
 
     if do_project:
         if do_scaling:
             w_msg = ("`do_project` assumes that the aligned lmk sets are scaled to have unit centroid size, which is not guaranteed if `do_scaling`. Proceeding with projection using the non-unit size lmk sets. See \'Rohlf, F. J. (1999). Shape statistics: Procrustes superimpositions and tangent spaces.\'")
             warnings.warn(w_msg)
-        XC = X0_ald_mu.reshape((1, n_coords*n_lmks))
-        X = X0_ald.reshape((n_lmk_sets, n_coords*n_lmks))
+        XC = aligned_mu.reshape((1, n_coords*n_lmks))
+        X = aligned.reshape((n_lmk_sets, n_coords*n_lmks))
         # Get the projection matrix to project a shape onto X_c.
         XC_proj = (1.0/(XC @ XC.T)) * (XC.T @ XC)
         # Project all shapes onto the subspace orthogonal to X_c.
         X_tan = X @ (np.identity(n_coords*n_lmks) - XC_proj)
         # The above are like coordinates in the tangent space.
         # To get the "icons", we add back the mean.
-        X0_ald = (X_tan + XC).reshape((n_lmk_sets, n_lmks, n_coords))
+        aligned = (X_tan + XC).reshape((n_lmk_sets, n_lmks, n_coords))
         # Recalculate the ssq
-        ssq = get_ssqd(X0_ald)
+        ssq = get_ssqd(aligned)
         print("ssq diff", ssq_old - ssq)
 
-    res['X0_ald'] = X0_ald
-    res['X0_ald_mu'] = X0_ald_mu
-    res['X0_b'] = X0_b
+    res['aligned'] = aligned
+    res['aligned_mu'] = aligned_mu
+    res['aligned_b'] = aligned_b
     res['ssq'] = ssq
     return res
 

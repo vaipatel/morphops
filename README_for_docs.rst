@@ -54,8 +54,8 @@ Usage Examples
    # :func:`gpa` is in the procrustes module.
    res = mops.gpa([A,B,C])
 
-   # res['X0_ald'] contains the aligned A, B, C.
-   # res['X0_mu'] contains the mean of the aligned A, B, C.
+   # res['aligned'] contains the aligned A, B, C.
+   # res['aligned_mu'] contains the mean of the aligned A, B, C.
 
    # Create a Thin-plate Spline warp from A to B and warp C.
    warped_C = mops.tps_warp(A, B, C)
