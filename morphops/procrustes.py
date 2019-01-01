@@ -459,7 +459,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
 
     do_project: bool, optional
         If `True`, the final aligned landmarks are orthogonally projected to 
-        the tangent space at the mean of aligned landmark sets `aligned_mu`, 
+        the tangent space at the mean of aligned landmark sets `mean`, 
         using equation 1 in [rohlf]_.
 
     no_reflect : bool, optional
@@ -468,7 +468,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         better alignment).
 
     unitize_mean: bool, optional
-        Flag indicating whether the mean of aligned landmark sets `aligned_mu` 
+        Flag indicating whether the mean of aligned landmark sets `mean` 
         should be rescaled to have unit centroid size.
 
     Returns
@@ -477,10 +477,10 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         aligned: numpy.ndarray
             A (n,p,k)-shaped set of aligned landmark sets.
         
-        aligned_mu: numpy.ndarray
+        mean: numpy.ndarray
             A (p,k)-shaped array representing the mean of the procrustes aligned landmark sets `aligned`.
         
-        aligned_b: numpy.ndarray
+        b: numpy.ndarray
             A (n,)-shaped array representing the scaling factor 
             :math:`\\beta_i` by which the centered :math:`X'_i` is scaled.
         
@@ -511,7 +511,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
 
 
     """
-    res = {'aligned': None, 'aligned_mu': None, 'aligned_b': None, 'ssq': None}
+    res = {'aligned': None, 'mean': None, 'b': None, 'ssq': None}
     n_lmk_sets = lmk_util.num_lmk_sets(X)
     n_lmks = lmk_util.num_lmks(X)
     n_coords = lmk_util.num_coords(X)
@@ -523,7 +523,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
     # 2. Remove scale (if not do_scaling, we're just doing partial procrustes)
     X0_norm = get_scale(X0)
     X0 = remove_scale(X0, X0_norm)
-    aligned_b = np.reciprocal(X0_norm)
+    b = np.reciprocal(X0_norm)
     
     # 3. Rotate all lmk sets to the mean of all other lmk sets. Scale.
     aligned = X0
@@ -565,8 +565,8 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
             beta = np.multiply(frac, phi)
             # Rescale aligned[i] by b_i
             aligned = np.multiply(aligned, np.reshape(beta, (n_lmk_sets,1,1)))
-            # Update aligned_b
-            aligned_b = np.multiply(aligned_b, beta)
+            # Update b
+            b = np.multiply(b, beta)
 
         ssq = get_ssqd(aligned)
         curr_iter += 1
@@ -574,15 +574,15 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
     print("ssq diff", ssq_old - ssq)
 
     # The mean is just the mean of the procrustes aligned lmk sets.
-    aligned_mu = (1.0/n_lmk_sets)*np.sum(aligned, axis=0)
+    mean = (1.0/n_lmk_sets)*np.sum(aligned, axis=0)
     if unitize_mean:
-        aligned_mu = remove_scale(aligned_mu)
+        mean = remove_scale(mean)
 
     if do_project:
         if do_scaling:
             w_msg = ("`do_project` assumes that the aligned lmk sets are scaled to have unit centroid size, which is not guaranteed if `do_scaling`. Proceeding with projection using the non-unit size lmk sets. See \'Rohlf, F. J. (1999). Shape statistics: Procrustes superimpositions and tangent spaces.\'")
             warnings.warn(w_msg)
-        XC = aligned_mu.reshape((1, n_coords*n_lmks))
+        XC = mean.reshape((1, n_coords*n_lmks))
         X = aligned.reshape((n_lmk_sets, n_coords*n_lmks))
         # Get the projection matrix to project a shape onto X_c.
         XC_proj = (1.0/(XC @ XC.T)) * (XC.T @ XC)
@@ -596,8 +596,8 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         print("ssq diff", ssq_old - ssq)
 
     res['aligned'] = aligned
-    res['aligned_mu'] = aligned_mu
-    res['aligned_b'] = aligned_b
+    res['mean'] = mean
+    res['b'] = b
     res['ssq'] = ssq
     return res
 

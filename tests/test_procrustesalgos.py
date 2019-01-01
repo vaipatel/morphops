@@ -103,5 +103,5 @@ class TestProcrustesAlgos(object):
         print("gpa should perform gpa -", scn)
         res = procrustes.gpa(X, do_project=do_project, do_scaling=do_scaling,
                              no_reflect=no_reflect, unitize_mean=unitize_mean)
-        assert np.allclose(res['aligned_mu'], mu)
-        assert np.allclose(res['aligned_b'], b)
+        assert np.allclose(res['mean'], mu)
+        assert np.allclose(res['b'], b)
