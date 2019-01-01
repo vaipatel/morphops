@@ -218,7 +218,7 @@ def rotate(source, target, no_reflect=False):
     Returns
     -------
     result: dict
-        src_ald: numpy.ndarray
+        aligned: numpy.ndarray
             A (p,k)-shaped landmark set consisting of the `source` landmarks 
             rotated to the `target`.
         
@@ -229,7 +229,7 @@ def rotate(source, target, no_reflect=False):
         D: numpy.ndarray
             A (k,)-shaped array representing the diagonal matrix of the SVD of np.dot(target.T, source).
     """
-    result = {'src_ald': None, 'R': None, 'D': None}
+    result = {'aligned': None, 'R': None, 'D': None}
     # Get the (d x d) covariance between target and source.
     C = np.matmul(lmk_util.transpose(target), source)
     # Need argmax of tr(Y(XR)t) = tr(RYtX) = tr(RC). Let svd(C) = UDVt.
@@ -254,7 +254,7 @@ def rotate(source, target, no_reflect=False):
         R[ndet_i] = np.matmul(np.matmul(V[ndet_i], N), UT[ndet_i])
         # Also update D
         D[ndet_i] = np.multiply(D[ndet_i], ones)
-    result['src_ald'] = np.matmul(source, R)
+    result['aligned'] = np.matmul(source, R)
     result['R'] = R
     result['D'] = D
     return result
@@ -309,7 +309,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
     Returns
     -------
     result: dict
-        src_ald: numpy.ndarray
+        aligned: numpy.ndarray
             A (p,k)-shaped landmark set consisting of the `source` landmarks 
             aligned to the `target`.
 
@@ -346,7 +346,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
 
 
     """
-    result = { 'oss': None, 'oss_stdized': None, 'b': None, 'R': None, 'c': None, 'src_ald': None }
+    result = { 'oss': None, 'oss_stdized': None, 'b': None, 'R': None, 'c': None, 'aligned': None }
     # 1. Remove position information
     muX = get_position(source)
     X0 = remove_position(source, muX)
@@ -378,7 +378,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         # For standardized oss we divide by ||Y^2||.
         result['oss_stdized'] = 1 - (traceD*traceD)
         result['oss'] = Y0_ssq*result['oss_stdized']
-        result['src_ald'] = \
+        result['aligned'] = \
             remove_position(np.dot(Y0_norm*traceD*X0,result['R']), -muY)
     else:
         result['b'] = 1
@@ -387,7 +387,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         # Again for standardized oss we divide by ||Y^2||.
         result['oss_stdized'] = 1 + (X0_ssq/Y0_ssq) - (2*(X0_norm/Y0_norm)*traceD)
         result['oss'] = Y0_ssq*result['oss_stdized']
-        result['src_ald'] = \
+        result['aligned'] = \
             remove_position(np.dot(X0_norm*X0,result['R']), -muY)
     # c is the gap between centroids of bXR and Y.
     result['c'] = muY - result['b']*np.dot(muX, result['R'])
@@ -545,7 +545,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
                 all_but_i = aligned[all_i != i]
                 mean_for_i = (1.0/(n_lmk_sets-1))*np.sum(all_but_i, axis=0)
                 # Rotate all lmk sets to this mean
-                aligned = rotate(aligned, mean_for_i, no_reflect)['src_ald']
+                aligned = rotate(aligned, mean_for_i, no_reflect)['aligned']
             ssq = get_ssqd(aligned)
 
         # 3.2. Scale
