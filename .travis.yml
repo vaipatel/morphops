@@ -2,6 +2,9 @@ sudo: false
 
 language: python
 
+os:
+  - osx
+
 python:
   - "3.6"
 
