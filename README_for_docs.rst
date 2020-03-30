@@ -11,8 +11,21 @@
 Welcome to Morphops!
 ====================
 
-Morphops implements common operations and algorithms for geometric
-morphometrics, in python 3.
+Morphops implements common operations and algorithms for Geometric
+Morphometrics, in Python 3.
+
+What is Geometric Morphometrics?
+======================
+
+Geometric Morphometrics can be thought of as a quantitative study of shapes of
+forms that are represented by homologous point sets or landmark sets. It
+provides mathematical tools for spatially relativizing landmark sets - it helps
+compare the spatial differences between equinumerous landmark sets that do arise
+merely from differences in spatial sizes, locations and orientations of those
+sets.
+
+Features
+========
 
 Some high-level operations in the current version are
 
