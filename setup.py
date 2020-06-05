@@ -11,16 +11,19 @@ with open("morphops/_version.py") as version_file:
 setup(
     name='morphops',
     version=version['__version__'],
-    description='Geometric morphometrics operations in python',
+    description='Geometric Morphometrics operations in Python',
     long_description=readme,
     long_description_content_type='text/x-rst',
-    author='Vai Patel',
-    author_email='vai.patel@gmail.com',
+    author='Vaibhav Patel',
+    author_email='vai.pateln@gmail.com',
     url='https://github.com/vaipatel/morphops',
     license='MIT',
     packages=find_packages(exclude=('tests', 'docs')),
     classifiers = [
+        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering'
     ],

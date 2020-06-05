@@ -22,13 +22,13 @@ sys.setrecursionlimit(1500)
 # -- Project information -----------------------------------------------------
 
 project = 'Morphops'
-copyright = '2018, Vai Patel'
-author = 'Vai Patel'
+copyright = '2018-2020, Vaibhav Patel'
+author = 'Vaibhav Patel'
 
 # The short X.Y version
 version = '0.1'
 # The full version, including alpha/beta/rc tags
-release = '0.1.9'
+release = '0.1.10'
 
 # -- General configuration ---------------------------------------------------
 
@@ -116,7 +116,7 @@ html_static_path = ['_static']
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
-html_sidebars = {'**': ['localtoc.html']}
+html_sidebars = {'**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']}
 
 
 # Indicates whether parentheses should be added when using :func: directive.
@@ -155,7 +155,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Morphops.tex', 'Morphops Documentation',
-     'Vai Patel', 'manual'),
+     'Vaibhav Patel', 'manual'),
 ]
 
 

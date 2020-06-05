@@ -5,7 +5,9 @@ Some examples are -
 
 * IO operations to read/write landmark data
 
-* Common preprocessing like procrustes alignment
+* Common preprocessing like Generalized Procrustes Alignment
+
+* Thin-plate spline warping operations
 
 Submodules
 ==========
