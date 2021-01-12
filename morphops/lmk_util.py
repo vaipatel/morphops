@@ -2,6 +2,7 @@
 """
 
 import numpy as np
+from scipy.spatial.distance import cdist
 
 def num_lmk_sets(X):
     """Returns the number of landmark sets n in `X`.
@@ -77,23 +78,8 @@ def ssqd(X):
         ssq += np.sum(np.square(X[i:] - X[i]))
     return ssq*1.0/n_lmk_sets
 
-def distance_matrix(X,Y):
+def distance_matrix(X, Y):
     """For (p1,k)-shaped X and (p2,k)-shaped Y, returns the (p1,p2) matrix 
     where the element at [i,j] is the distance between X[i,:] and Y[j,:].
-
-    The following code was previously used for this calculation since it is
-    faster. But `it can produce negative values <https://scicomp.stackexchange.com/questions/30360/fast-and-numerically-stable-pairwise-distance-algorithms>`_,
-    and so I've resorted to the slower but numerically stable version.
-
-    .. code-block:: python
-
-        XX = np.tile(np.sum(np.square(X),axis=1),(len(Y),1)).T
-        YY = np.tile(np.sum(np.square(Y),axis=1),(len(X),1))
-        XY = np.dot(X, transpose(Y))
-        return np.sqrt(XX + YY - 2*XY)
     """
-    d = np.zeros((num_lmks(X), num_lmks(Y)))
-    for i in range(len(X)):
-        for j in range(len(Y)):
-            d[i,j] = np.sqrt(np.sum(np.square(np.array(X[i]) - np.array(Y[j]))))
-    return d
+    return cdist(X, Y)
