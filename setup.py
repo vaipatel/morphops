@@ -21,7 +21,7 @@ setup(
     author_email='vai.pateln@gmail.com',
     url='https://github.com/vaipatel/morphops',
     license='MIT',
-    packages=find_packages(exclude=('tests', 'docs')),
+    packages=find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.5',
