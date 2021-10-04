@@ -10,7 +10,7 @@ def num_lmk_sets(X):
     `X` must be a 3-D tensor of shape (n,p,k) corresponding to a set of 
     n landmark sets.
     """
-    if (len(np.shape(X)) is not 3):
+    if len(np.shape(X)) != 3:
         raise ValueError("The input X must be a 3-D tensor of shape "
         "(n x p x k) corresponding to n landmark sets, each consisting "
         "of p landmarks in k dimensions.")

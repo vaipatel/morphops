@@ -5,14 +5,17 @@ file formats.
 import numpy as np
 import morphops.lmk_util as lmk_util
 
+
 class MopsFileReadError(Exception):
     pass
+
 
 class MopsFileWriteError(Exception):
     pass
 
+
 def read_dta(filename):
-    """Reads \*.dta files, as written by the IDAV Landmark Editor.
+    r"""Reads *.dta files, as written by the IDAV Landmark Editor.
 
     dta files typically have the following structure.
 
@@ -57,7 +60,7 @@ def read_dta(filename):
             # we have a header. Eg- "1 2L 30 1 9999 Dim=3"
             if line.startswith("1") and not did_header:
                 header_els = line.split()
-                if len(header_els) is not 6:
+                if len(header_els) != 6:
                     raise MopsFileReadError("Error in line {}. A .dta file "
                     "header must have 6 parts.".format(curr_line_i))
                 # Item 1 is the n_lmk_sets, followed by L or l
@@ -87,12 +90,13 @@ def read_dta(filename):
     lmk_sets = np.array(pts).reshape((n, p, k))
     return lmk_sets, names
 
+
 def write_dta(filename, lmk_sets, names=[]):
-    """Writes \*.dta files, as written by the IDAV Landmark Editor.
+    r"""Writes *.dta files, as written by the IDAV Landmark Editor.
 
     See also
     --------
-    read_dta: For an explanation of the \*.dta format.
+    read_dta: For an explanation of the *.dta format.
     
     Todo
     ----

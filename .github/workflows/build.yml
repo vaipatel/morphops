@@ -1,0 +1,41 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build-with-pip:
+    name: ${{ matrix.os }}/py${{ matrix.python-version }}/pip
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      MPLBACKEND: agg
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.8, 3.9]
+        include:
+          # Oldest supported version of main dependencies on Python 3.5.1
+          - os: ubuntu-latest
+            python-version: 3.5.1
+            OLDEST_SUPPORTED_VERSION: true
+            DEPENDENCIES: numpy==1.13.3 scipy==1.3.3
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Display versions
+        run: python -V; pip -V
+      - name: Install oldest supported version
+        if: ${{ matrix.OLDEST_SUPPORTED_VERSION }}
+        run: pip install ${{ matrix.DEPENDENCIES }}
+      - name: Install depedencies and package
+        shell: bash
+        run: pip install -U -e .'[tests]'
+      - name: Run tests
+        run: pytest --cov=morphops --pyargs morphops
+      - name: Generate line coverage
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: coverage report --show-missing
