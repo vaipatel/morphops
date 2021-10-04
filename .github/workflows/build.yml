@@ -17,7 +17,7 @@ jobs:
         include:
           # Oldest supported version of main dependencies on Python 3.5.1
           - os: ubuntu-latest
-            python-version: 3.5.1
+            python-version: 3.5
             OLDEST_SUPPORTED_VERSION: true
             DEPENDENCIES: numpy==1.13.3 scipy==1.3.3
     steps:
