@@ -1,5 +1,7 @@
-.. image:: https://travis-ci.com/vaipatel/morphops.svg?branch=master
-    :target: https://travis-ci.com/vaipatel/morphops
+.. GitHub Actions
+.. image:: https://github.com/hakonanes/morphops/workflows/build/badge.svg
+    :target: https://github.com/hakonanes/morphops/actions
+    :alt: Build status
 
 |
 

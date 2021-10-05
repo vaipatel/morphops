@@ -1,4 +1,3 @@
-import os
 from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
@@ -7,6 +6,10 @@ with open('README.rst') as readme_file:
 version = {}
 with open("morphops/_version.py") as version_file:
     exec(version_file.read(), version)
+
+extra_feature_requirements = {
+    "tests": ["coverage >= 5.0", "pytest >= 5.4", "pytest-cov >= 2.8.1"],
+}
 
 setup(
     name='morphops',
@@ -18,17 +21,20 @@ setup(
     author_email='vai.pateln@gmail.com',
     url='https://github.com/vaipatel/morphops',
     license='MIT',
-    packages=find_packages(exclude=('tests', 'docs')),
-    classifiers = [
+    packages=find_packages(),
+    classifiers=[
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering'
     ],
     python_requires='>=3.5.1',
-    setup_requires= ['numpy >= 1.13.3'],
-    install_requires= ['numpy >= 1.13.3','scipy >= 1.3.3'],
+    setup_requires=['numpy >= 1.13.3'],
+    extras_require=extra_feature_requirements,
+    install_requires=['numpy >= 1.13.3', 'scipy >= 1.3.3'],
     include_package_data=True
 )
