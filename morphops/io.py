@@ -15,7 +15,7 @@ class MopsFileWriteError(Exception):
 
 
 def read_dta(filename):
-    r"""Reads *.dta files, as written by the IDAV Landmark Editor.
+    r"""Reads \*.dta files, as written by the IDAV Landmark Editor.
 
     dta files typically have the following structure.
 
@@ -92,11 +92,11 @@ def read_dta(filename):
 
 
 def write_dta(filename, lmk_sets, names=[]):
-    r"""Writes *.dta files, as written by the IDAV Landmark Editor.
+    r"""Writes \*.dta files, as written by the IDAV Landmark Editor.
 
     See also
     --------
-    read_dta: For an explanation of the *.dta format.
+    read_dta: For an explanation of the \*.dta format.
     
     Todo
     ----

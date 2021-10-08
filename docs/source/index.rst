@@ -13,6 +13,11 @@ morphops module
 .. Members
 .. =======
 
+.. toctree::
+   :hidden:
+
+   changelog.rst
+
 Indices and tables
 ==================
 
