@@ -33,7 +33,6 @@ setup(
         'Topic :: Scientific/Engineering'
     ],
     python_requires='>=3.5.1',
-    setup_requires=['numpy >= 1.13.3'],
     extras_require=extra_feature_requirements,
     install_requires=['numpy >= 1.13.3', 'scipy >= 1.3.3'],
     include_package_data=True
