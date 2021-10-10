@@ -12,8 +12,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+from datetime import datetime
 import os
 import sys
+
+from morphops._version import __version__ as full_version
+
 
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../morphops'))
@@ -22,13 +26,13 @@ sys.setrecursionlimit(1500)
 # -- Project information -----------------------------------------------------
 
 project = 'Morphops'
-copyright = '2018-2020, Vaibhav Patel'
+copyright = f"2018-{datetime.now().year}, Vaibhav Patel"
 author = 'Vaibhav Patel'
 
 # The short X.Y version
 version = '0.1'
 # The full version, including alpha/beta/rc tags
-release = '0.1.11'
+release = full_version
 
 # -- General configuration ---------------------------------------------------
 
@@ -105,7 +109,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

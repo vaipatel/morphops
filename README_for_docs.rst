@@ -1,36 +1,39 @@
-.. GitHub Actions
-.. image:: https://github.com/hakonanes/morphops/workflows/build/badge.svg
-    :target: https://github.com/hakonanes/morphops/actions
-    :alt: Build status
-
-|
-
-.. contents::
-    :local:
-
-|
-
 Welcome to Morphops!
 ====================
 
 Morphops implements common operations and algorithms for Geometric
 Morphometrics, in Python 3.
 
+.. GitHub Actions
+.. image:: https://github.com/vaipatel/morphops/actions/workflows/build.yml/badge.svg
+    :target: https://github.com/vaipatel/morphops/actions/workflows/build.yml
+    :alt: Build status
+
+.. Read the Docs
+.. image:: https://readthedocs.org/projects/morphops/badge/?version=latest
+    :target: https://morphops.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. PyPI version
+.. image:: https://img.shields.io/pypi/v/morphops
+    :target: https://pypi.org/project/morphops
+    :alt: PyPI version
+
 Features
 ========
 
 Some high-level operations in the current version are
 
-* Centering, rescaling data: \
+* Centering, rescaling data:
   :meth:`remove_position(lmk_sets) <morphops.procrustes.remove_position>`,
   :meth:`remove_scale(lmk_sets) <morphops.procrustes.remove_scale>`
-* Rigid Rotation, Ordinary and Generalized Procrustes alignment: \
+* Rigid Rotation, Ordinary and Generalized Procrustes alignment:
   :meth:`rotate(src_sets,tar_sets) <morphops.procrustes.rotate>`,
   :meth:`opa(src_set,tar_set) <morphops.procrustes.opa>`,
   :meth:`gpa(all_sets) <morphops.procrustes.gpa>`
-* Thin-plate spline warping: \
+* Thin-plate spline warping:
   :meth:`tps_warp(X, Y, pts) <morphops.tps.tps_warp>`
-* Reading from and writing to \*.dta files: \
+* Reading from and writing to \*.dta files:
   :meth:`read_dta(fn) <morphops.io.read_dta>`,
   :meth:`write_dta(fn,lmk_sets,names) <morphops.io.write_dta>`
 
