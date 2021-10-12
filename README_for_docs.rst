@@ -125,3 +125,9 @@ With the shapes lying in a high-dimensional linear space after preprocessing,
 they can now be submitted to various commonly used statistical procedures like
 Principal Components Analysis and various kinds of regression for further
 analysis.
+
+Contributors ✨
+===============
+
+.. include:: CONTRIBUTORS.rst
+
