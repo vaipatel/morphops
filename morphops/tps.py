@@ -154,7 +154,7 @@ def tps_coefs(X, Y):
     """
     n_coords = lmk_util.num_coords(X)
     n_lmks = lmk_util.num_lmks(X)
-    Y_0 = np.row_stack((Y, np.zeros((n_coords+1,n_coords))))
+    Y_0 = np.vstack((Y, np.zeros((n_coords+1,n_coords))))
     L = L_matrix(X)
     Q = np.linalg.solve(L, Y_0)
     if np.any(np.isnan(Q)):
