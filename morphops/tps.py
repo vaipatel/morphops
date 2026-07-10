@@ -22,7 +22,7 @@ import morphops.lmk_util as lmk_util
 import warnings
 
 def K_matrix(X, Y=None):
-    """Calculates the upper-right (p,p) submatrix of the (p+k+1,p+k+1)-shaped 
+    r"""Calculates the upper-right (p,p) submatrix of the (p+k+1,p+k+1)-shaped 
     L matrix.
 
     Parameters
@@ -45,11 +45,11 @@ def K_matrix(X, Y=None):
         In particular, if k = 2, then  :math:`U(r) = r^2 \log(r^2)`, else 
         :math:`U(r) = r`.
 
-        Note: Using :math:`\\alpha U(r)` instead of :math:`U(r)` for some 
-        :math:`\\alpha \in \mathbb{R}` will not change the calculated spline.
+        Note: Using :math:`\alpha U(r)` instead of :math:`U(r)` for some 
+        :math:`\alpha \in \mathbb{R}` will not change the calculated spline.
         Simple block matrix inverse formulae show that when calculating :math:`L^{-1}`
-        for the spline using :math:`\\alpha U(r)`, the non-uniform coefficients
-        multiplied to the :math:`U` terms will be scaled by :math:`\\frac{1}{\\alpha}`
+        for the spline using :math:`\alpha U(r)`, the non-uniform coefficients
+        multiplied to the :math:`U` terms will be scaled by :math:`\frac{1}{\alpha}`
         while the uniform coefficients will stay the same.
     """
     num_coords = lmk_util.num_coords(X)
