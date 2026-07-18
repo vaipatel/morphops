@@ -30,15 +30,13 @@ setup(
     packages=find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering'
     ],
-    python_requires='>=3.5.1',
+    python_requires='>=3.12',
     extras_require=extra_feature_requirements,
     install_requires=['numpy >= 1.13.3', 'scipy >= 1.3.3'],
     include_package_data=True

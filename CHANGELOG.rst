@@ -14,6 +14,17 @@ entries are sorted in descending chronological order.
 Unreleased
 ==========
 
+Changed
+-------
+- Dropped support for Python versions older than 3.12 and updated CI to test
+  Python 3.12 through 3.14.
+
+Fixed
+-----
+- Fixed compatibility with NumPy 2.x by replacing removed or deprecated NumPy
+  APIs.
+- Fixed invalid escape sequence warnings in math-heavy docstrings.
+
 Added
 -----
 - all-contributors section to README. Added manually due to `lack of rst support in the cli, bot <https://github.com/all-contributors/all-contributors-cli/issues/300>`_, but see `PR 301 there <https://github.com/all-contributors/all-contributors-cli/pull/301>`_.
