@@ -19,8 +19,8 @@ def make_haus():
 
     The roof of the house is tilted to the left, which creates asymmetry.
     """
-    haus = np.row_stack((make_ngon(4, 3*piOvr4), 
-                         make_ngon(3, -piOvr4/2) + [0, 1]))
+    haus = np.vstack((make_ngon(4, 3*piOvr4),
+                      make_ngon(3, -piOvr4/2) + [0, 1]))
     haus_c = np.array([0,3/7])
     haus0 = haus - haus_c
     haus0_b = np.sqrt(np.sum(np.square(haus0)))

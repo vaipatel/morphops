@@ -34,7 +34,7 @@ tps_coefs_affine_data = [(fourgon, fourgon + 1,
                 "zeros and A is a row of ones stacked on identity." 
                 ),
                 (fourgon, fourgon_45, 
-                np.zeros((4,2)),np.row_stack(([0,0],get_2d_rot(-np.pi/4))),
+                np.zeros((4,2)),np.vstack(([0,0],get_2d_rot(-np.pi/4))),
                 "X is a square of side sqrt(2), Y = XR. Result should be that "
                 "W is all zeros and A is a row of zeros stacked on R.T." 
                 )]

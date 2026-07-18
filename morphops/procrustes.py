@@ -20,7 +20,7 @@ import morphops.lmk_util as lmk_util
 import warnings
 
 def get_position(lmks):    
-    """Returns the centroid of the set or sets of landmarks in `lmks`.
+    r"""Returns the centroid of the set or sets of landmarks in `lmks`.
 
     The centroid of a :math:`p` landmarks is simply the arithmetic mean of all 
     the landmark positions. That is 
@@ -57,7 +57,7 @@ def get_position(lmks):
     return np.asarray(np.nanmean(lmks, axis=axis))
 
 def get_scale(lmks):       
-    """Returns the euclidean norm of the real matrix or matrices in `lmks`.
+    r"""Returns the euclidean norm of the real matrix or matrices in `lmks`.
 
     The euclidean norm of the real (p x k) matrix :math:`X` is calculated as
 
@@ -182,7 +182,7 @@ def remove_scale(lmks, scale=None):
     return np.reshape(np.divide(lmks, scale_re), lmks_shape)
 
 def rotate(source, target, no_reflect=False):
-    """Rotates the landmark set `source` so as to minimize its sum of squared interlandmark distances to `target`.
+    r"""Rotates the landmark set `source` so as to minimize its sum of squared interlandmark distances to `target`.
 
     Say X=`source` and Y=`target`. By default :func:`rotate` tries to find
 
@@ -260,25 +260,25 @@ def rotate(source, target, no_reflect=False):
     return result
 
 def opa(source, target, do_scaling=False, no_reflect=False):
-    """Performs Ordinary Procrustes Alignment to transform the landmark set 
+    r"""Performs Ordinary Procrustes Alignment to transform the landmark set 
     `source` such that the squared Euclidean distance between `source` and 
     `target` is minimized.
 
     Say X=`source` and Y=`target` and `do_scaling` = `True`. 
     :func:`opa` tries to find
 
-    .. math:: \operatorname*{argmin}_{\\beta > 0,\ R \in O(k),\ \gamma \in \mathbb{R}^k } D^2_{\mathtt{OPA}}(X, Y) = \| Y - \\beta X R - \mathbf{1_k} \gamma^T \|^2
+    .. math:: \operatorname*{argmin}_{\beta > 0,\ R \in O(k),\ \gamma \in \mathbb{R}^k } D^2_{\mathtt{OPA}}(X, Y) = \| Y - \beta X R - \mathbf{1_k} \gamma^T \|^2
 
-    If `do_scaling` = `False`, :math:`\\beta = 1`. If `no_reflect` = `True`, 
+    If `do_scaling` = `False`, :math:`\beta = 1`. If `no_reflect` = `True`, 
     then just as in :func:`rotate`, :func:`opa` will force :math:`R \in SO(k)`.
 
     The Ordinary (Procrustes) Sum of Squares or OSS is defined as
 
-    .. math:: OSS(X, Y) = \operatorname*{min}_{\\beta > 0,\ R \in O(k),\ \gamma \in \mathbb{R}^k } D^2_{\mathtt{OPA}}(X, Y)
+    .. math:: OSS(X, Y) = \operatorname*{min}_{\beta > 0,\ R \in O(k),\ \gamma \in \mathbb{R}^k } D^2_{\mathtt{OPA}}(X, Y)
 
     Note
     ----
-    Generally for :func:`opa`, :math:`OSS(X1, X2) \\neq OSS(X2, X1)`.
+    Generally for :func:`opa`, :math:`OSS(X1, X2) \neq OSS(X2, X1)`.
 
     In contrast to :func:`opa`, :func:`gpa` is symmetric for the input matrices 
     in that :math:`G(X1, X2) = G(X2, X1)`.
@@ -297,8 +297,8 @@ def opa(source, target, do_scaling=False, no_reflect=False):
 
     do_scaling : bool, optional
         Flag indicating whether the best alignment should also find the optimal 
-        :math:`\\beta` that minimizes :math:`D^2_{\mathtt{OPA}}`. The default 
-        value of `do_scaling` is False, which means :math:`\\beta = 1`, or in 
+        :math:`\beta` that minimizes :math:`D^2_{\mathtt{OPA}}`. The default 
+        value of `do_scaling` is False, which means :math:`\beta = 1`, or in 
         other words, `source` will not be scaled.
 
     no_reflect : bool, optional
@@ -314,7 +314,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
             aligned to the `target`.
 
         b: numpy.float64 or int
-            A number representing the scaling factor :math:`\\beta` by which 
+            A number representing the scaling factor :math:`\beta` by which 
             `source` is scaled.
         
         R: numpy.ndarray
@@ -328,7 +328,7 @@ def opa(source, target, do_scaling=False, no_reflect=False):
         oss: numpy.float64
             This number represents the Ordinary (Procrustes) Sum of Squares, 
             which is the minimum of :math:`D^2_{\mathtt{OPA}}`. Essentially, 
-            the `oss` is the result of plugging in the optimal :math:`\\beta`, 
+            the `oss` is the result of plugging in the optimal :math:`\beta`, 
             :math:`R` and :math:`\gamma` into the :math:`D^2_{\mathtt{OPA}}` 
             objective.
         
@@ -396,17 +396,17 @@ def opa(source, target, do_scaling=False, no_reflect=False):
 
 def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         no_reflect=False, unitize_mean=False):
-    """Performs Generalized Procrustes Alignment to transform all the landmark 
+    r"""Performs Generalized Procrustes Alignment to transform all the landmark 
     sets in `X` such that (a quantity proportional to) the sum of squared norms 
     of pairwise differences between all the landmark sets is minimized.
 
     Say :code:`len(X) = n`. :func:`gpa` tries to find
 
-    .. math:: \operatorname*{argmin}_{\\beta_i > 0,\ R_i \in O(k),\ \gamma_i \in \mathbb{R}^k } g(X) = \\frac{1}{n} \sum_{i=1}^{n-1} { \sum_{j=i+1}^n {\| (\\beta_i X_i R_i + \mathbf{1_k} \gamma_i^T) - (\\beta_j X_j R_j + \mathbf{1_k} \gamma_j^T) \|^2}}
+    .. math:: \operatorname*{argmin}_{\beta_i > 0,\ R_i \in O(k),\ \gamma_i \in \mathbb{R}^k } g(X) = \frac{1}{n} \sum_{i=1}^{n-1} { \sum_{j=i+1}^n {\| (\beta_i X_i R_i + \mathbf{1_k} \gamma_i^T) - (\beta_j X_j R_j + \mathbf{1_k} \gamma_j^T) \|^2}}
 
     The Generalized (Procrustes) Sum of Squares or G is defined as
 
-    .. math:: G(X) = \operatorname*{inf}_{\\beta_i > 0,\ R_i \in O(k),\ \gamma_i \in \mathbb{R}^k } g(X)
+    .. math:: G(X) = \operatorname*{inf}_{\beta_i > 0,\ R_i \in O(k),\ \gamma_i \in \mathbb{R}^k } g(X)
 
     The GPA algorithm, per [drymar]_, tries to iteratively rotate and scale the 
     landmark sets in `X` until the sum of squared differences is below `tol`. 
@@ -426,7 +426,7 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
 
     Note
     ----
-    Generally for :func:`opa`, :math:`OSS(X1, X2) \\neq OSS(X2, X1)`.
+    Generally for :func:`opa`, :math:`OSS(X1, X2) \neq OSS(X2, X1)`.
 
     In contrast to :func:`opa`, :func:`gpa` is symmetric for the input matrices 
     in that :math:`G(X1, X2) = G(X2, X1)`.
@@ -453,8 +453,8 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         has been achieved or `max_iters` is reached, whichever comes first.
 
     do_scaling : bool, optional
-        If `False`, :math:`\\beta_i = \\frac{1}{\| X'_i \|}`, where 
-        :math:`X'_i` is the mean-centered :math:`X_i`. Else :math:`\\beta_i` is 
+        If `False`, :math:`\beta_i = \frac{1}{\| X'_i \|}`, where 
+        :math:`X'_i` is the mean-centered :math:`X_i`. Else :math:`\beta_i` is 
         calculated as per [tenb]_.
 
     do_project: bool, optional
@@ -482,12 +482,12 @@ def gpa(X, tol=1e-5,max_iters=10, do_project=False, do_scaling=False,
         
         b: numpy.ndarray
             A (n,)-shaped array representing the scaling factor 
-            :math:`\\beta_i` by which the centered :math:`X'_i` is scaled.
+            :math:`\beta_i` by which the centered :math:`X'_i` is scaled.
         
         ssq: numpy.float64
             This number represents the Generalized (Procrustes) Sum of Squares, 
             which is the infinimum of :math:`g`. Essentially, 
-            the `ssq` is the result of plugging in the optimal :math:`\\beta_i`,
+            the `ssq` is the result of plugging in the optimal :math:`\beta_i`,
             :math:`R_i` and :math:`\gamma_i` into the :math:`g` objective.
         
     Warns

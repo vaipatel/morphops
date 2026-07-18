@@ -22,7 +22,7 @@ import morphops.lmk_util as lmk_util
 import warnings
 
 def K_matrix(X, Y=None):
-    """Calculates the upper-right (p,p) submatrix of the (p+k+1,p+k+1)-shaped 
+    r"""Calculates the upper-right (p,p) submatrix of the (p+k+1,p+k+1)-shaped 
     L matrix.
 
     Parameters
@@ -45,11 +45,11 @@ def K_matrix(X, Y=None):
         In particular, if k = 2, then  :math:`U(r) = r^2 \log(r^2)`, else 
         :math:`U(r) = r`.
 
-        Note: Using :math:`\\alpha U(r)` instead of :math:`U(r)` for some 
-        :math:`\\alpha \in \mathbb{R}` will not change the calculated spline.
+        Note: Using :math:`\alpha U(r)` instead of :math:`U(r)` for some 
+        :math:`\alpha \in \mathbb{R}` will not change the calculated spline.
         Simple block matrix inverse formulae show that when calculating :math:`L^{-1}`
-        for the spline using :math:`\\alpha U(r)`, the non-uniform coefficients
-        multiplied to the :math:`U` terms will be scaled by :math:`\\frac{1}{\\alpha}`
+        for the spline using :math:`\alpha U(r)`, the non-uniform coefficients
+        multiplied to the :math:`U` terms will be scaled by :math:`\frac{1}{\alpha}`
         while the uniform coefficients will stay the same.
     """
     num_coords = lmk_util.num_coords(X)
@@ -154,7 +154,7 @@ def tps_coefs(X, Y):
     """
     n_coords = lmk_util.num_coords(X)
     n_lmks = lmk_util.num_lmks(X)
-    Y_0 = np.row_stack((Y, np.zeros((n_coords+1,n_coords))))
+    Y_0 = np.vstack((Y, np.zeros((n_coords+1,n_coords))))
     L = L_matrix(X)
     Q = np.linalg.solve(L, Y_0)
     if np.any(np.isnan(Q)):

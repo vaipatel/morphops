@@ -120,7 +120,7 @@ def write_dta(filename, lmk_sets, names=[]):
         # Write the names. Missing names are populated as 'InsertName{ID}', 
         # where ID goes from [len(names) + 1, n + 1).
         rem_names_ids = np.arange(len(names)+1,n+1).astype(str)
-        rem_names = np.core.char.add('InsertName', rem_names_ids)
+        rem_names = np.char.add('InsertName', rem_names_ids)
         names = np.append(names, rem_names)
         for name in names:
             f.write(name + "\n")
