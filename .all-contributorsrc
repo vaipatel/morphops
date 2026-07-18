@@ -1,0 +1,41 @@
+{
+  "projectName": "morphops",
+  "projectOwner": "vaipatel",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "CONTRIBUTORS.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": false,
+  "linkToUsage": false,
+  "skipCi": true,
+  "commitConvention": "angular",
+  "commitType": "docs",
+  "contributors": [
+    {
+      "login": "vaipatel",
+      "name": "Vaibhav Patel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6489594?v=4",
+      "profile": "https://github.com/vaipatel",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "hakonanes",
+      "name": "Håkon Wiik Ånes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12139781?v=4",
+      "profile": "https://www.ntnu.edu/employees/hakon.w.anes",
+      "contributions": [
+        "doc",
+        "tool",
+        "infra",
+        "maintenance"
+      ]
+    }
+  ]
+}

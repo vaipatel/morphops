@@ -27,7 +27,7 @@ Fixed
 
 Added
 -----
-- all-contributors section to README. Added manually due to `lack of rst support in the cli, bot <https://github.com/all-contributors/all-contributors-cli/issues/300>`_, but see `PR 301 there <https://github.com/all-contributors/all-contributors-cli/pull/301>`_.
+- Added automated contributor acknowledgements using the All Contributors bot.
 
 [0.1.13] - 2021-10-10
 =====================
