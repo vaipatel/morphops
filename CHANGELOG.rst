@@ -11,8 +11,8 @@ on `Keep a Changelog <https://keepachangelog.com/en/1.1.0>`_.
 Contributors to each release are listed in alphabetical order by first name. List
 entries are sorted in descending chronological order.
 
-Unreleased
-==========
+[0.2.0] - 2026-07-19
+====================
 
 Changed
 -------
@@ -31,6 +31,12 @@ Fixed
 Added
 -----
 - Added automated contributor acknowledgements using the All Contributors bot.
+
+Contributors
+------------
+- Håkon Wiik Ånes
+- Philipp Schlegel
+- Vaibhav Patel
 
 [0.1.13] - 2021-10-10
 =====================
