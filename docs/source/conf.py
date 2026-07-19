@@ -30,7 +30,7 @@ copyright = f"2018-{datetime.now().year}, Vaibhav Patel"
 author = 'Vaibhav Patel'
 
 # The short X.Y version
-version = '0.1'
+version = '.'.join(full_version.split('.')[:2])
 # The full version, including alpha/beta/rc tags
 release = full_version
 
@@ -72,7 +72,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -210,5 +210,5 @@ epub_exclude_files = ['search.html']
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'numpy': ('https://docs.scipy.org/doc/numpy/', None)
+    'numpy': ('https://numpy.org/doc/stable/', None)
 }

@@ -118,8 +118,8 @@ they can now be submitted to various commonly used statistical procedures like
 Principal Components Analysis and various kinds of regression for further
 analysis.
 
-Contributors ✨
-===============
+Contributors
+============
 
 See the project's `contributor acknowledgements <https://github.com/vaipatel/morphops/blob/master/CONTRIBUTORS.md>`_.
 The list is maintained with the `All Contributors bot <https://allcontributors.org/en/bot/overview/>`_.

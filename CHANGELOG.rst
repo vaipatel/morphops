@@ -18,6 +18,9 @@ Changed
 -------
 - Dropped support for Python versions older than 3.12 and updated CI to test
   Python 3.12 through 3.14.
+- Modernized package builds and PyPI publishing, including Trusted Publishing
+  and CI validation for distributions and documentation.
+- Updated the minimum supported dependencies to NumPy 1.26 and SciPy 1.12.
 
 Fixed
 -----

@@ -15,9 +15,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.12', '3.13', '3.14']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Display versions
@@ -31,3 +31,49 @@ jobs:
       - name: Run tests with coverage
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14' }}
         run: pytest --cov=morphops --cov-report=term-missing --pyargs morphops
+
+  minimum-dependencies:
+    name: ubuntu-latest/py3.12/minimum-dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install minimum dependencies and package
+        run: |
+          pip install numpy==1.26.4 scipy==1.12.0 pytest
+          pip install --no-deps -e .
+          pip check
+      - name: Run tests
+        run: pytest --pyargs morphops
+
+  package:
+    name: Build and validate package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Build and validate distributions
+        run: |
+          pip install build twine
+          python -m build
+          twine check dist/*
+
+  docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Install package and documentation dependencies
+        run: pip install -e .'[docs]'
+      - name: Build documentation
+        run: sphinx-build -W --keep-going -b html docs/source docs/build/html
